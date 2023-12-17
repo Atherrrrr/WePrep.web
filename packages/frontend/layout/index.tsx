@@ -14,6 +14,7 @@ import {
   Tooltip,
   IconButton,
   Button,
+  Box,
 } from "@mui/material";
 import { styled } from "@mui/system";
 
@@ -100,7 +101,20 @@ export default function Layout(props: LayoutProps) {
       >
         <Grid container sx={{ width: "100%" }} alignItems="center">
           <Grid item xs={1} sx={{ height: 40 }}>
-            <DomainImage alt="WePrep logo" src="/app-logo.png" />
+            <Box
+              component="img"
+              sx={{
+                height: '100%',
+                width: 'auto',  
+                maxWidth: '100%',
+                objectFit: 'contain', 
+                display: 'block', 
+                marginLeft: 'auto',  
+                marginRight: 'auto'
+              }}
+              alt="WePrep logo"
+              src="/app-logo.png"
+            />
           </Grid>
           {currentUser !== null ? (
             <Grid
