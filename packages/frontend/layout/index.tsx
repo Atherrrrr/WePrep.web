@@ -59,6 +59,7 @@ export default function Layout(props: LayoutProps) {
   const snackbar = useSnackbar();
 
   const router = useRouter();
+  const currentURL = router.asPath;
 
   return (
     <>
@@ -90,7 +91,9 @@ export default function Layout(props: LayoutProps) {
           {message}
         </Alert>
       </Snackbar>
-      <AppBar
+
+
+      {(!(currentURL.includes("login") || currentURL.includes("register")) && <AppBar
         position="static"
         color="secondary"
         sx={{ height: "fit-content", padding: "0.5rem 0.75rem" }}
@@ -160,7 +163,7 @@ export default function Layout(props: LayoutProps) {
             </Grid>
           )}
         </Grid>
-      </AppBar>
+      </AppBar>)}
 
       <PageContainer>{props.children}</PageContainer>
     </>
