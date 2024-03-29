@@ -2,20 +2,14 @@ import Link from "next/link";
 
 import * as React from "react";
 
-import {
-  Stack,
-  useTheme,
-  Button,
-  ButtonGroup,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import { Stack, useTheme, Button, ButtonGroup, Typography, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 
 import { useSnackbar } from "@/store/snackbar";
 import { AUTH_TOKEN, authAtom, currentUserAtom } from "@/auth";
 
-import { FilledInputField, DomainImage } from "@/components/shared";
+import { FilledInputField } from "@/components/shared";
+import { LogoImage } from "@/components/shared/LogoImage";
 import { BACKEND_URL, LOGIN_BILKENTEER, LOGIN_MODERATOR } from "@/routes";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
@@ -43,8 +37,8 @@ export default function LoginPage() {
   const [token, setToken] = useAtom(authAtom);
   const [loginRedirect] = useAtom(loginRedirectAtom);
 
-  const [email, setEmail] = React.useState<string>("");
-  const [password, setPassword] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("e");
+  const [password, setPassword] = React.useState<string>("e");
   const [loggingIn, setLoggingIn] = React.useState<boolean>(false);
 
   const snackbar = useSnackbar();
@@ -57,45 +51,46 @@ export default function LoginPage() {
 
   const handleLogin = async (loginType: "bilkenteer" | "moderator") => {
     flushSync(() => setLoggingIn(true));
-    const loginUrl =
-      loginType === "bilkenteer"
-        ? `${BACKEND_URL}${LOGIN_BILKENTEER}`
-        : `${BACKEND_URL}${LOGIN_MODERATOR}`;
-    try {
-      const res = await fetch(loginUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
+    router.replace("/profile");
+    // const loginUrl =
+    //   loginType === "bilkenteer"
+    //     ? `${BACKEND_URL}${LOGIN_BILKENTEER}`
+    //     : `${BACKEND_URL}${LOGIN_MODERATOR}`;
+    // try {
+    //   const res = await fetch(loginUrl, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       email: email,
+    //       password: password,
+    //     }),
+    //   });
 
-      const data = await res.json();
-      if (data.hasOwnProperty("token")) {
-        localStorage.setItem(AUTH_TOKEN, data["token"]["accessToken"]);
-        setCurrentUser(() => {
-          const user = { ...data };
-          delete user["token"];
-          return user;
-        });
-        setToken(data["token"]["accessToken"]);
-        if (loginRedirect) {
-          router.replace(loginRedirect);
-        } else {
-          router.replace("/PracticeSession");
-        }
-        return;
-      } else if ("errors" in data) {
-        throw new Error(data["errors"][0]);
-      }
-    } catch (err) {
-      snackbar("error", (err as Error).message);
-    } finally {
-      setLoggingIn(false);
-    }
+    //   const data = await res.json();
+    //   if (data.hasOwnProperty("token")) {
+    //     localStorage.setItem(AUTH_TOKEN, data["token"]["accessToken"]);
+    //     setCurrentUser(() => {
+    //       const user = { ...data };
+    //       delete user["token"];
+    //       return user;
+    //     });
+    //     setToken(data["token"]["accessToken"]);
+    //     if (loginRedirect) {
+    //       router.replace(loginRedirect);
+    //     } else {
+    //       router.replace("/profile");
+    //     }
+    //     return;
+    //   } else if ("errors" in data) {
+    //     throw new Error(data["errors"][0]);
+    //   }
+    // } catch (err) {
+    //   snackbar("error", (err as Error).message);
+    // } finally {
+    //   setLoggingIn(false);
+    // }
   };
 
   return (
@@ -116,7 +111,7 @@ export default function LoginPage() {
         </div>
       )}
       <LoginStack gap={2}>
-        <DomainImage src="/app-logo.png" alt="WePrep logo" />
+        <LogoImage />
         <FilledInputField
           disabled={loggingIn}
           placeholder="Email"
@@ -156,12 +151,7 @@ export default function LoginPage() {
           Forgot your password?
         </Button>
 
-        <ButtonGroup
-          disabled={loggingIn}
-          size="small"
-          fullWidth
-          variant="contained"
-        >
+        <ButtonGroup disabled={loggingIn} size="small" fullWidth variant="contained">
           <Button
             onClick={() => handleLogin("bilkenteer")}
             sx={{

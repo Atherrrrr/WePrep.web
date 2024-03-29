@@ -1,8 +1,6 @@
 import Link from "next/link";
 import * as React from "react";
-
 import { useAtom } from "jotai";
-
 import {
   Snackbar,
   Alert,
@@ -15,25 +13,18 @@ import {
   IconButton,
   Button,
   Box,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/system";
-
-import StorefrontIcon from "@mui/icons-material/Storefront";
 import LoginIcon from "@mui/icons-material/Login";
 import { IconMessageReport } from "@tabler/icons-react";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-
-import {
-  snackbarAtom,
-  snackbarMessage,
-  snackbarSeverity,
-  useSnackbar,
-} from "@/store/snackbar";
-import { DomainImage } from "@/components/shared";
+import LightDarkSwitchBtn from "@/components/shared/LightDarkSwitchBtn";
+import { snackbarAtom, snackbarMessage, snackbarSeverity, useSnackbar } from "@/store/snackbar";
 import { useRouter } from "next/router";
 import { SignupIcon } from "@/icons";
 import useProfilePicture from "@/hooks/useProfilePicture";
+import { NotificationsOutlined, PlayCircle } from "@mui/icons-material";
+import { IThemeMode } from "@/theme/types";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -84,100 +75,106 @@ export default function Layout(props: LayoutProps) {
         autoHideDuration={6000}
         onClose={() => setSnackbarStatus(false)}
       >
-        <Alert
-          onClose={() => setSnackbarStatus(false)}
-          severity={severity}
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={() => setSnackbarStatus(false)} severity={severity} sx={{ width: "100%" }}>
           {message}
         </Alert>
       </Snackbar>
 
-
-      {(!(currentURL.includes("login") || currentURL.includes("register")) && <AppBar
-        position="static"
-        color="secondary"
-        sx={{ height: "fit-content", padding: "0.5rem 0.75rem" }}
-      >
-        <Grid container sx={{ width: "100%" }} alignItems="center">
-          <Grid item xs={1} sx={{ height: 40 }}>
-            <Box
-              component="img"
-              sx={{
-                height: '100%',
-                width: 'auto',  
-                maxWidth: '100%',
-                objectFit: 'contain', 
-                display: 'block', 
-                marginLeft: 'auto',  
-                marginRight: 'auto'
-              }}
-              alt="WePrep logo"
-              src="/app-logo.png"
-            />
-          </Grid>
-          {currentUser !== null ? (
+      {!(currentURL.includes("login") || currentURL.includes("register")) && (
+        <AppBar
+          position="static"
+          color="secondary"
+          sx={{ height: "fit-content", padding: "0.5rem 0.75rem" }}
+        >
+          <Grid container sx={{ width: "100%" }} alignItems="center">
             <Grid
               item
-              xs={11}
+              xs={1}
               sx={{
+                height: 40,
                 display: "flex",
-                justifyContent: "right",
-                alignItems: "center",
-                gap: 1,
+                alignItems: "center", // Center vertically
+                justifyContent: "center", // Center horizontally
               }}
             >
-              <Link href={"/product/post"}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  sx={{ textTransform: "none", height: "fit-content" }}
-                  startIcon={<AddCircleOutlineIcon style={{ fill: "#fff" }} />}
-                >
-                  Start New Practice Session
-                </Button>
-              </Link>
-
-              <IconButton size="small">
-                <NotificationsIcon
-                  style={{ fill: theme.palette.primary.main }}
-                />
-              </IconButton>
-              <Link href={"/profile"}>
-                <Avatar src={"/user-avatar.svg"} />
-              </Link>
+              <Box
+                component="img"
+                sx={{
+                  height: "80%",
+                  objectFit: "contain",
+                  display: "block",
+                  marginLeft: theme.spacing(2),
+                  marginRight: "auto",
+                }}
+                alt="WePrep logo"
+                src={
+                  theme.palette.mode === IThemeMode.LIGHT
+                    ? "/app-logo-light.png"
+                    : "/app-logo-dark.png"
+                }
+              />
             </Grid>
-          ) : (
-            <Grid
-              item
-              xs={2}
-              sx={{ display: "flex", justifyContent: "right", gap: 1 }}
-            >
-              <Link href={"/register"}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  startIcon={<SignupIcon stroke="#fff" />}
-                  sx={{ textTransform: "none" }}
-                >
-                  Sign Up
-                </Button>
-              </Link>
+            {currentUser !== null ? (
+              <Grid
+                item
+                xs={11}
+                sx={{
+                  display: "flex",
+                  justifyContent: "right",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Link href={"/product/post"}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    sx={{ textTransform: "none", height: "fit-content" }}
+                    startIcon={<PlayCircle style={{ fill: "#fff" }} />}
+                  >
+                    Start New Practice Session
+                  </Button>
+                </Link>
 
-              <Link href="/login">
-                <Button
-                  size="small"
-                  variant="contained"
-                  startIcon={<LoginIcon style={{ fill: "#fff" }} />}
-                  sx={{ textTransform: "none" }}
-                >
-                  Login
-                </Button>
-              </Link>
-            </Grid>
-          )}
-        </Grid>
-      </AppBar>)}
+                <IconButton size="small">
+                  <NotificationsOutlined style={{ fill: theme.palette.primary.main }} />
+                </IconButton>
+                <Link href={"/profile"}>
+                  <Avatar src={"/user-avatar.svg"} />
+                </Link>
+                <Typography variant="subtitle2" color={theme.palette.primary.main}>
+                  Faaiz Khan
+                </Typography>
+                <LightDarkSwitchBtn />
+              </Grid>
+            ) : (
+              <Grid item xs={2} sx={{ display: "flex", justifyContent: "right", gap: 1 }}>
+                <Link href={"/register"}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    startIcon={<SignupIcon stroke="#fff" />}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
+
+                <Link href="/login">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    startIcon={<LoginIcon style={{ fill: "#fff" }} />}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </Grid>
+            )}
+          </Grid>
+        </AppBar>
+      )}
 
       <PageContainer>{props.children}</PageContainer>
     </>

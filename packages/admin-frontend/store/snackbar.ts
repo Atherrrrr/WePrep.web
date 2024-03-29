@@ -20,7 +20,7 @@ export const useSnackbar = () => {
       setSeverity(severity);
       setMessage(message);
     },
-    [],
+    []
   );
   return showSnackbar;
 };

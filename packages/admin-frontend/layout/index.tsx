@@ -15,11 +15,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import accessAtom from "@/store/access";
-import {
-  snackbarAtom,
-  snackbarSeverity,
-  snackbarMessage,
-} from "@/store/snackbar";
+import { snackbarAtom, snackbarSeverity, snackbarMessage } from "@/store/snackbar";
 import { DomainImage } from "@/components/shared";
 import { API_KEY } from "@/routes";
 import { CloseOutlined } from "@mui/icons-material";
@@ -62,7 +58,7 @@ export default function Layout(props: LayoutProps) {
           }}
         >
           <div style={{ width: "20vw", height: 100, marginBottom: 10 }}>
-            <DomainImage alt="WePrep admin logo" src="/app-logo-admin.png" />
+            <DomainImage alt="WePrep admin logo" src="/app-logo-light.png" />
           </div>
           <Typography>Unauthorized Access</Typography>
         </Box>
@@ -77,11 +73,7 @@ export default function Layout(props: LayoutProps) {
         autoHideDuration={6000}
         onClose={() => setSnackbarStatus(false)}
       >
-        <Alert
-          onClose={() => setSnackbarStatus(false)}
-          severity={severity}
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={() => setSnackbarStatus(false)} severity={severity} sx={{ width: "100%" }}>
           {message}
         </Alert>
       </Snackbar>
@@ -112,13 +104,7 @@ export default function Layout(props: LayoutProps) {
             <CloseOutlined style={{ fill: "white" }} />
           </IconButton>
 
-          <TextField
-            disabled
-            value={API_KEY}
-            label="API KEY"
-            multiline
-            fullWidth
-          />
+          <TextField disabled value={API_KEY} label="API KEY" multiline fullWidth />
         </Box>
       </Modal>
       <AppBar
@@ -134,7 +120,7 @@ export default function Layout(props: LayoutProps) {
           gap={10}
         >
           <Grid item xs={1} sx={{ height: 40 }}>
-            <DomainImage alt="WePrep admin logo" src="/app-logo-admin.png" />
+            <DomainImage alt="WePrep admin logo" src="/app-logo-light.png" />
           </Grid>
           <Grid item xs={1}>
             <Button

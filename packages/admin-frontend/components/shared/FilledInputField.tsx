@@ -14,7 +14,7 @@ export interface FilledInputFieldProps
     FilledInputFieldStyles {
   value: string;
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => any;
 }
 

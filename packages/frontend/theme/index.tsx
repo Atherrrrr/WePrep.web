@@ -1,27 +1,72 @@
-import * as React from "react";
-import { createTheme, ThemeOptions, ThemeProvider } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
+// import { createContext, useEffect, useState } from "react";
+// import { IThemeContext, IThemeMode } from "./types";
+// import { Theme, useMediaQuery, ThemeProvider } from "@mui/material";
+// import { AppDarkTheme, AppLightTheme } from "./themes";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#00255A",
-      light: "#E2F1FA",
-    },
-    secondary: {
-      main: "#E2F1FA",
-      light: "#FFFFFF",
-    },
-    error: {
-      main: red[200],
-    },
-    background: {
-      default: "#FFFFFF",
-    },
-    mode: "light",
-  },
-});
+// export const ThemeContext = createContext<IThemeContext | null>(null);
 
-export function MuiThemeProvider(props: any) {
-  return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>;
-}
+// export const ThemeContextProvider: React.FunctionComponent<
+//   React.PropsWithChildren
+// > = ({ children }) => {
+//   const [themeMode, setThemeMode] = useState<IThemeMode>(IThemeMode.LIGHT);
+//   const [theme, setTheme] = useState<Theme>(AppLightTheme);
+
+//   const SYSTEM_THEME: Exclude<IThemeMode, IThemeMode.SYSTEM> = useMediaQuery(
+//     "(prefers-color-scheme: dark)"
+//   )
+//     ? IThemeMode.DARK
+//     : IThemeMode.LIGHT;
+
+//   //Default
+//   useEffect(() => {
+//     switch (SYSTEM_THEME) {
+//       case IThemeMode.LIGHT:
+//         setTheme(AppLightTheme);
+//         break;
+//       case IThemeMode.DARK:
+//         setTheme(AppDarkTheme);
+//         break;
+//       default:
+//         setTheme(AppLightTheme);
+//         break;
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     switch (themeMode) {
+//       case IThemeMode.LIGHT:
+//         setTheme(AppLightTheme);
+//         break;
+//       case IThemeMode.DARK:
+//         setTheme(AppDarkTheme);
+//         break;
+//       case IThemeMode.SYSTEM:
+//         switch (SYSTEM_THEME) {
+//           case IThemeMode.LIGHT:
+//             setTheme(AppLightTheme);
+//             break;
+//           case IThemeMode.DARK:
+//             setTheme(AppDarkTheme);
+//             break;
+//           default:
+//             setTheme(AppLightTheme);
+//             break;
+//         }
+//     }
+//   }, [themeMode, SYSTEM_THEME]);
+
+//   const switchThemeMode = (mode: IThemeMode) => {
+//     setThemeMode(mode);
+//   };
+
+//   return (
+//     <ThemeContext.Provider
+//       value={{
+//         themeMode,
+//         switchThemeMode,
+//       }}
+//     >
+//       <ThemeProvider theme={theme}> {children} </ThemeProvider>
+//     </ThemeContext.Provider>
+//   );
+// };

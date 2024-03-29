@@ -1,7 +1,5 @@
 import Link from "next/link";
-
 import * as React from "react";
-
 import {
   Stack,
   Grid,
@@ -12,14 +10,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
-
 import { useSnackbar } from "@/store/snackbar";
-
 import { FilledInputField, DomainImage } from "@/components/shared";
 import { BACKEND_URL, REGISTER_BILKENTEER } from "@/routes";
-import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { flushSync } from "react-dom";
+import Auth from "aws-amplify";
 
 const RegisterStack = styled(Stack)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -34,6 +30,11 @@ const RegisterStack = styled(Stack)(({ theme }) => ({
   border: `1px solid ${theme.palette.primary.main}`,
 }));
 
+type User = {
+  email: string;
+  password: string;
+};
+
 export default function RegisterPage() {
   /** a successful registration request will ignore the generated JWT
    * and instead redirect to login page
@@ -44,6 +45,7 @@ export default function RegisterPage() {
   const [firstname, setFirstname] = React.useState<string>("");
   const [lastname, setLastname] = React.useState<string>("");
   const [email, setEmail] = React.useState<string>("");
+  const [phoneNumber, setPhoneNumber] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [registering, setRegistering] = React.useState<boolean>(false);
 
@@ -66,12 +68,28 @@ export default function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          firstName: firstname,
-          lastName: lastname,
+          given_name: firstname,
+          family_name: lastname,
+          phone_number: phoneNumber,
           email: email,
           password: password,
         }),
       });
+
+      try {
+        const result = await Auth.signUp({
+          username: email,
+          password: password,
+          // if custom attribute is added
+          attributes: {
+            "custom:role": "user",
+          },
+        });
+        return result;
+      } catch (error) {
+        console.error("Error registering user:", error);
+      }
+      console.log("User registered:", user);
 
       const data = await res.json();
       if (data.hasOwnProperty("token")) {
@@ -89,6 +107,24 @@ export default function RegisterPage() {
       setRegistering(false);
     }
   };
+
+  // const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   try {
+  //     const result = await Auth.signUp({
+  //       username: user.email,
+  //       password: user.password,
+  //       // if custom attribute is added
+  //       attributes: {
+  //         "custom:role": "user",
+  //       },
+  //     })
+  //     return result
+  //   } catch (error) {
+  //     console.error("Error registering user:", error)
+  //   }
+  //   console.log("User registered:", user);
+  // };
 
   return (
     <>
@@ -108,7 +144,7 @@ export default function RegisterPage() {
         </div>
       )}
       <RegisterStack gap={2}>
-        <DomainImage src="/app-logo.png" alt="WePrep logo" />
+        <DomainImage src="/app-logo-light.png" alt="WePrep logo" />
         <Grid container gap={0.5} justifyContent="space-between">
           <Grid item xs={5.75} style={{ margin: "5px" }}>
             <FilledInputField
@@ -149,6 +185,20 @@ export default function RegisterPage() {
           fullWidth
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          multiline={false}
+          size="small"
+          background="white"
+          hoverbackground={theme.palette.secondary.light}
+          focusedbackground={theme.palette.secondary.light}
+        />
+        <FilledInputField
+          style={{ margin: "5px" }}
+          disabled={registering}
+          placeholder="Phone Number"
+          label="Phone Number"
+          fullWidth
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
           multiline={false}
           size="small"
           background="white"

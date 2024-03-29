@@ -58,7 +58,7 @@ export default function Home() {
 
   const [moderators, setModerators] = React.useState<ModeratorInfo[]>([]);
   const [status, setStatus] = React.useState<"error" | "success" | "loading">(
-    "loading",
+    "loading"
   );
 
   const [registerModal, setRegisterModal] = React.useState<boolean>(false);
@@ -108,8 +108,8 @@ export default function Home() {
         (data.errors as string[]).forEach((error) =>
           enqueueSnackbar(
             <Typography sx={{ color: "white" }}>{error}</Typography>,
-            { variant: "error", hideIconVariant: false },
-          ),
+            { variant: "error", hideIconVariant: false }
+          )
         );
         return;
       } else if (data.hasOwnProperty("uuid")) {
@@ -159,7 +159,7 @@ export default function Home() {
         console.log(suspenduser);
         setModerators((prev) => {
           const index = prev.findIndex(
-            (moderator) => moderator.uuid === suspenduser.uuid,
+            (moderator) => moderator.uuid === suspenduser.uuid
           );
           return prev.with(index, suspenduser);
         });
@@ -202,7 +202,7 @@ export default function Home() {
         snackbar("success", "moderator unsuspended");
         setModerators((prev) => {
           const index = prev.findIndex(
-            (moderator) => moderator.uuid === suspenduser.uuid,
+            (moderator) => moderator.uuid === suspenduser.uuid
           );
           return prev.with(index, suspenduser);
         });
@@ -256,7 +256,7 @@ export default function Home() {
         >
           <Add style={{ fill: "white" }} />
         </Fab>,
-        document.getElementById("fab-div") as HTMLElement,
+        document.getElementById("fab-div") as HTMLElement
       )}
       <RegisterModal
         open={registerModal}
