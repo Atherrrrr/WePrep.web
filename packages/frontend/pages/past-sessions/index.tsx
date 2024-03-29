@@ -94,6 +94,7 @@ export default function PracticeSession() {
       <Typography variant="h2" align="center" gutterBottom>
         Past Sessions
       </Typography>
+
       <PracticeSessionsTable data={sessionData} />
     </>
   );

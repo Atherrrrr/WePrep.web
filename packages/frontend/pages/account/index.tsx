@@ -1,94 +1,149 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import {
-  Snackbar,
-  Alert,
-  AppBar,
-  Grid,
-  Fab,
-  useTheme,
-  Avatar,
-  Tooltip,
-  IconButton,
-  Button,
-  Box,
-  Typography,
-} from "@mui/material";
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-  return { name, calories, fat, carbs, protein };
-}
+import React, { useState } from "react";
+import { Box, Button, Grid, TextField, Typography, IconButton, Avatar } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
-const rows = [
-  createData("Frozen yoghurt", 22001298, 6.0, 24, 4.0),
-  createData("Ice cream sanddddwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Frozen yoghurt", 22001298, 6.0, 24, 4.0),
-  createData("Ice cream sanddddwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Frozen yoghurt", 22001298, 6.0, 24, 4.0),
-  createData("Ice cream sanddddwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Frozen yoghurt", 22001298, 6.0, 24, 4.0),
-  createData("Ice cream sanddddwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Frozen yoghurt", 22001298, 6.0, 24, 4.0),
-  createData("Ice cream sanddddwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Frozen yoghurt", 22001298, 6.0, 24, 4.0),
-  createData("Ice cream sanddddwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+export default function AccountsPage() {
+  const [isEditable, setIsEditable] = useState(false);
+  const [profile, setProfile] = useState({
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    phoneNumber: "123-456-7890",
+    password: "password123",
+    aboutMe: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    skills: "React, Material-UI, JavaScript",
+  });
 
-export default function Account() {
-  const theme = useTheme();
+  // Handlers
+  const handleEditSave = () => {
+    setIsEditable(!isEditable);
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setProfile({ ...profile, [name]: value });
+  };
 
   return (
-    <>
-      <h1 style={{ color: theme.palette.text.secondary }}>Welcome Faaiz 👋 !</h1>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right">Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <Box sx={{ flexGrow: 1, p: 4 }}>
+      <Grid container spacing={2}>
+        {/* Left side fields */}
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="First Name"
+            variant="outlined"
+            value={profile.firstName}
+            onChange={handleChange}
+            name="firstName"
+            disabled={!isEditable}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Last Name"
+            variant="outlined"
+            value={profile.lastName}
+            onChange={handleChange}
+            name="lastName"
+            disabled={!isEditable}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Email"
+            variant="outlined"
+            value={profile.email}
+            onChange={handleChange}
+            name="email"
+            disabled={!isEditable}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Phone Number"
+            variant="outlined"
+            value={profile.phoneNumber}
+            onChange={handleChange}
+            name="phoneNumber"
+            disabled={!isEditable}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Password"
+            variant="outlined"
+            value={profile.password}
+            onChange={handleChange}
+            name="password"
+            disabled={!isEditable}
+            margin="normal"
+            type="password"
+          />
+        </Grid>
+
+        {/* Right side profile picture */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+        >
+          <Avatar src="/profile-pic.jpg" sx={{ width: 100, height: 100, mb: 2 }} />
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <IconButton color="primary" component="label">
+              <CameraAltIcon />
+              <input type="file" hidden />
+              <Typography variant="body2">Change Picture</Typography>
+            </IconButton>
+            <IconButton color="error">
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Grid>
+
+        {/* Full width fields */}
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="About Me"
+            variant="outlined"
+            value={profile.aboutMe}
+            onChange={handleChange}
+            name="aboutMe"
+            disabled={!isEditable}
+            multiline
+            rows={4}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Skills"
+            variant="outlined"
+            value={profile.skills}
+            onChange={handleChange}
+            name="skills"
+            disabled={!isEditable}
+            multiline
+            margin="normal"
+          />
+        </Grid>
+
+        {/* Edit/Save Button */}
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            startIcon={isEditable ? <SaveIcon /> : <EditIcon />}
+            onClick={handleEditSave}
+            variant="contained"
+            sx={{ mt: 2 }}
+          >
+            {isEditable ? "Save" : "Edit"}
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }

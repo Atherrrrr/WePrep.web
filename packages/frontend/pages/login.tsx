@@ -2,7 +2,15 @@ import Link from "next/link";
 
 import * as React from "react";
 
-import { Stack, useTheme, Button, ButtonGroup, Typography, CircularProgress } from "@mui/material";
+import {
+  Stack,
+  useTheme,
+  Button,
+  ButtonGroup,
+  Typography,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import { styled } from "@mui/system";
 
 import { useSnackbar } from "@/store/snackbar";
@@ -95,96 +103,108 @@ export default function LoginPage() {
 
   return (
     <>
-      {loggingIn && (
-        <div
-          style={{
-            position: "absolute",
-            inset: "0",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            zIndex: 999,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress color="primary" size={80} thickness={3} />
-        </div>
-      )}
-      <LoginStack gap={2}>
-        <LogoImage />
-        <FilledInputField
-          disabled={loggingIn}
-          placeholder="Email"
-          label="Email"
-          fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          multiline={false}
-          size="small"
-          background="white"
-          hoverbackground={theme.palette.secondary.light}
-          focusedbackground={theme.palette.secondary.light}
-        />
-        <FilledInputField
-          disabled={loggingIn}
-          placeholder="Password"
-          label="Password"
-          fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          multiline={false}
-          size="small"
-          background="white"
-          hoverbackground={theme.palette.secondary.light}
-          focusedbackground={theme.palette.secondary.light}
-        />
-
-        <Button
-          disabled={loggingIn}
-          size="small"
-          variant="text"
-          sx={{
-            textTransform: "none",
-            width: "fit-content",
-          }}
-        >
-          Forgot your password?
-        </Button>
-
-        <ButtonGroup disabled={loggingIn} size="small" fullWidth variant="contained">
-          <Button
-            onClick={() => handleLogin("bilkenteer")}
+      <Box
+        sx={{
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: theme.palette.background.default, // Set the background color
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {loggingIn && (
+          <Box
             sx={{
-              textTransform: "none",
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              zIndex: 999,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            Login
-          </Button>
-        </ButtonGroup>
-        <div
-          style={{
-            width: "100%",
-            height: "1px",
-            backgroundColor: theme.palette.background.default,
-          }}
-        />
-        <Typography variant="h6" color="primary">
-          Do you not have an account yet?
-        </Typography>
-        <Link href={"/register"}>
+            <CircularProgress color="primary" size={80} thickness={3} />
+          </Box>
+        )}
+        <LoginStack gap={2}>
+          <LogoImage />
+          <FilledInputField
+            disabled={loggingIn}
+            placeholder="Email"
+            label="Email"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            multiline={false}
+            size="small"
+            background="white"
+            hoverbackground={theme.palette.secondary.light}
+            focusedbackground={theme.palette.secondary.light}
+          />
+          <FilledInputField
+            disabled={loggingIn}
+            placeholder="Password"
+            label="Password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            multiline={false}
+            size="small"
+            background="white"
+            hoverbackground={theme.palette.secondary.light}
+            focusedbackground={theme.palette.secondary.light}
+          />
+
           <Button
             disabled={loggingIn}
             size="small"
-            variant="outlined"
+            variant="text"
             sx={{
               textTransform: "none",
               width: "fit-content",
             }}
           >
-            SignUp for New Account
+            Forgot your password?
           </Button>
-        </Link>
-      </LoginStack>
+
+          <ButtonGroup disabled={loggingIn} size="small" fullWidth variant="contained">
+            <Button
+              onClick={() => handleLogin("bilkenteer")}
+              sx={{
+                textTransform: "none",
+              }}
+            >
+              Login
+            </Button>
+          </ButtonGroup>
+          <div
+            style={{
+              width: "100%",
+              height: "1px",
+              backgroundColor: theme.palette.background.default,
+            }}
+          />
+          <Typography variant="h6" color="primary">
+            Do you not have an account yet?
+          </Typography>
+          <Link href={"/register"}>
+            <Button
+              disabled={loggingIn}
+              size="small"
+              variant="outlined"
+              sx={{
+                textTransform: "none",
+                width: "fit-content",
+              }}
+            >
+              SignUp for New Account
+            </Button>
+          </Link>
+        </LoginStack>
+      </Box>
     </>
   );
 }

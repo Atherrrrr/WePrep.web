@@ -19,6 +19,7 @@ import {
   Card,
   Avatar,
   Box,
+  styled,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
@@ -39,6 +40,21 @@ interface SessionData {
 interface PracticeSessionsTableProps {
   data: SessionData[];
 }
+
+const ProgressContainer = styled("div")(({ theme }) => ({
+  position: "relative",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: theme.spacing(2),
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    width: "100%",
+    height: "50%",
+    bottom: 0,
+  },
+}));
 
 const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) => {
   // Function to render action buttons
@@ -71,6 +87,12 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
     return "#F31260";
   };
 
+  const ProgressLabel = styled(Typography)(({ theme, score }) => ({
+    position: "absolute",
+    zIndex: 1,
+    color: getColorForProgressScore(score), // Dynamic color for the text
+  }));
+
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -94,11 +116,7 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
             </TableHead>
             <TableBody>
               {data.map((session, index) => (
-                <TableRow
-                  hover
-                  key={index}
-                  sx={{ "& > *": { bgcolor: index % 2 === 0 ? theme.palette.grey[100] : "white" } }}
-                >
+                <TableRow hover key={index} sx={{ "& > *": { bgcolor: theme.palette.info.light } }}>
                   {/* Apply conditional styling to table row cells */}
                   <TableCell>
                     <Box sx={{ position: "relative", width: 75, height: 75 }}>
@@ -129,23 +147,43 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
                   <TableCell>{session.role}</TableCell>
                   <TableCell>{session.date}</TableCell>
                   <TableCell align="center">
-                    <CircularProgress
-                      variant="determinate"
-                      value={session.avgScore}
-                      size={24}
-                      sx={{
-                        borderRadius: "50%",
-                        transform: "rotate(-90deg)",
-                        [`& .${circularProgressClasses.circle}`]: {
-                          strokeLinecap: "round",
-                          stroke: getColorForProgressScore(session.avgScore), // Dynamic color for the progress bar
-                        },
-                      }}
-                    />
-                    <Typography
-                      variant="body2"
-                      sx={{ display: "inline", ml: 1 }}
-                    >{`${session.avgScore}%`}</Typography>
+                    <ProgressContainer>
+                      {session.status !== "Processing" && (
+                        <ProgressLabel
+                          variant="subtitle2"
+                          score={session.avgScore}
+                        >{`${session.avgScore}%`}</ProgressLabel>
+                      )}
+                      <CircularProgress
+                        variant="determinate"
+                        value={100} // This creates a full circle
+                        size={65}
+                        thickness={4}
+                        sx={{
+                          position: "absolute",
+                          [`& .${circularProgressClasses.circle}`]: {
+                            strokeLinecap: "round",
+                            stroke: theme.palette.text.disabled,
+                          },
+                        }}
+                      />
+                      {session.status !== "Processing" && (
+                        <CircularProgress
+                          variant="determinate"
+                          value={session.avgScore} // Assuming semi-circle effect is needed, multiply by 2
+                          size={65}
+                          thickness={4}
+                          sx={{
+                            borderRadius: "50%",
+                            transform: "rotate(-90deg)",
+                            [`& .${circularProgressClasses.circle}`]: {
+                              strokeLinecap: "round",
+                              stroke: getColorForProgressScore(session.avgScore), // Dynamic color for the progress bar
+                            },
+                          }}
+                        />
+                      )}
+                    </ProgressContainer>
                   </TableCell>
                   <TableCell>
                     {session.status === "Processing" ? (

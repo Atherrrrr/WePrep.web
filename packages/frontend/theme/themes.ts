@@ -76,8 +76,8 @@ export const AppLightTheme: Theme = createTheme({
       hover: "#E2F1FA",
     },
     info: {
-      light: grey[400],
-      main: "#71717A",
+      light: "#fff",
+      main: "#A1A1AA",
     },
   },
   typography: {
@@ -120,8 +120,8 @@ export const AppDarkTheme: Theme = createTheme({
       hover: "#2A93D5",
     },
     info: {
-      light: grey[400],
-      main: "#71717A",
+      light: "#161A23",
+      main: "#58585C",
     },
   },
   typography: {
