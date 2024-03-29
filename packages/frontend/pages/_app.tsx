@@ -3,11 +3,17 @@ import type { AppProps } from "next/app";
 import { Provider as StoreProvider } from "jotai";
 import { EmotionCache } from "@emotion/react";
 import Layout from "@/layout";
-import ProtectedRoute from "@/auth";
+import ProtectedRoute from "@/auth_rowaha";
 import React from "react";
 import { Amplify } from "aws-amplify";
 import { FC } from "react";
 import PageProvider from "@/components/layout/PageProvider";
+import awsconfig from "@/src/amplifyconfiguration.json";
+import AuthContext from "@/utils/AuthContext";
+// import AuthContext from "../context/AuthContext";
+
+Amplify.configure({ ...awsconfig });
+
 export interface MUIAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
@@ -16,7 +22,7 @@ export interface MUIAppProps extends AppProps {
 const App: FC<MUIAppProps> = ({ Component, pageProps, emotionCache }) => (
   // return (
   <StoreProvider>
-    {/* <ThemeContextProvider> */}
+    {/* <AuthContext> */}
     <PageProvider emotionCache={emotionCache}>
       <Layout>
         {pageProps.protected ? (
@@ -28,7 +34,7 @@ const App: FC<MUIAppProps> = ({ Component, pageProps, emotionCache }) => (
         )}
       </Layout>
     </PageProvider>
-    {/* </ThemeContextProvider> */}
+    {/* </AuthContext> */}
   </StoreProvider>
 );
 

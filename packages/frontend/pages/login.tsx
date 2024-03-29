@@ -6,7 +6,7 @@ import { Stack, useTheme, Button, ButtonGroup, Typography, CircularProgress } fr
 import { styled } from "@mui/system";
 
 import { useSnackbar } from "@/store/snackbar";
-import { AUTH_TOKEN, authAtom, currentUserAtom } from "@/auth";
+import { AUTH_TOKEN, authAtom, currentUserAtom } from "@/auth_rowaha";
 
 import { FilledInputField } from "@/components/shared";
 import { LogoImage } from "@/components/shared/LogoImage";
@@ -51,7 +51,7 @@ export default function LoginPage() {
 
   const handleLogin = async (loginType: "bilkenteer" | "moderator") => {
     flushSync(() => setLoggingIn(true));
-    router.replace("/profile");
+    router.replace("/dashboard");
     // const loginUrl =
     //   loginType === "bilkenteer"
     //     ? `${BACKEND_URL}${LOGIN_BILKENTEER}`
@@ -80,7 +80,7 @@ export default function LoginPage() {
     //     if (loginRedirect) {
     //       router.replace(loginRedirect);
     //     } else {
-    //       router.replace("/profile");
+    //       router.replace("/account");
     //     }
     //     return;
     //   } else if ("errors" in data) {

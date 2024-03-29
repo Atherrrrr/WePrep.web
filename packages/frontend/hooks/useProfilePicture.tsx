@@ -1,19 +1,17 @@
 import * as React from "react";
 import { useAtom } from "jotai";
 import { PROFILE_PICTURE, BACKEND_URL } from "@/routes";
-import { currentUserAtom } from "@/auth";
+import { currentUserAtom } from "@/auth_rowaha";
 
 export default function useProfilePicture() {
   const [currentUser] = useAtom(currentUserAtom);
-  const [profileImgSrc, setProfileImgSrc] = React.useState<string>(
-    "/blank-profile-picture.webp",
-  );
+  const [profileImgSrc, setProfileImgSrc] = React.useState<string>("/blank-profile-picture.webp");
 
   const fetchProfilePicture = React.useCallback(async () => {
     if (currentUser === null) return;
     try {
       const response = await fetch(
-        `${BACKEND_URL}${PROFILE_PICTURE}?userid=${currentUser.uuid}&role=${currentUser.role}`,
+        `${BACKEND_URL}${PROFILE_PICTURE}?userid=${currentUser.uuid}&role=${currentUser.role}`
       );
 
       if (!response.ok) {

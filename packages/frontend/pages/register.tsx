@@ -16,6 +16,7 @@ import { BACKEND_URL, REGISTER_BILKENTEER } from "@/routes";
 import { useRouter } from "next/router";
 import { flushSync } from "react-dom";
 import Auth from "aws-amplify";
+import { LogoImage } from "@/components/shared/LogoImage";
 
 const RegisterStack = styled(Stack)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -77,7 +78,7 @@ export default function RegisterPage() {
       });
 
       try {
-        const result = await Auth.signUp({
+        const result = await Auth.Amplify.({
           username: email,
           password: password,
           // if custom attribute is added
@@ -144,7 +145,7 @@ export default function RegisterPage() {
         </div>
       )}
       <RegisterStack gap={2}>
-        <DomainImage src="/app-logo-light.png" alt="WePrep logo" />
+        <LogoImage/>
         <Grid container gap={0.5} justifyContent="space-between">
           <Grid item xs={5.75} style={{ margin: "5px" }}>
             <FilledInputField

@@ -2,21 +2,19 @@ import * as React from "react";
 
 import type { RequestMethod, S3Route } from "./types";
 import { BACKEND_URL } from "@/routes";
-import { AUTH_TOKEN } from "@/auth";
+import { AUTH_TOKEN } from "@/auth_rowaha";
 
 export function useImageUpload<R, E>(
   auth: boolean,
   method: RequestMethod,
   header: Omit<HeadersInit, "Authorization"> | null,
-  endpoint: S3Route,
+  endpoint: S3Route
 ) {
   const [imageBlob, setImageBlob] = React.useState<Blob | null>(null);
   const [response, setResponse] = React.useState<R | null>(null);
   const [error, setError] = React.useState<E | null>(null);
 
-  const [innerHeader, setInnerHeader] = React.useState<HeadersInit | undefined>(
-    undefined,
-  );
+  const [innerHeader, setInnerHeader] = React.useState<HeadersInit | undefined>(undefined);
 
   const handleImageSelect = React.useCallback((filelist: FileList | null) => {
     if (filelist === null) {
