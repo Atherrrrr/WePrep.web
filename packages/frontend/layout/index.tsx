@@ -1,5 +1,6 @@
 import Link from "next/link";
 import * as React from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAtom } from "jotai";
 import {
   Snackbar,
@@ -14,12 +15,13 @@ import {
   Button,
   Box,
   Typography,
-  Paper,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import LoginIcon from "@mui/icons-material/Login";
 import { IconMessageReport } from "@tabler/icons-react";
 import LightDarkSwitchBtn from "@/components/shared/LightDarkSwitchBtn";
+import PracticeSessionButton from "@/components/shared/PracticeSessionButton";
+import StartPracticeSessionModel from "@/components/models/StartPracticeSessionModel";
 import { snackbarAtom, snackbarMessage, snackbarSeverity, useSnackbar } from "@/store/snackbar";
 import { useRouter } from "next/router";
 import { SignupIcon } from "@/icons";
@@ -32,30 +34,36 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-// const PageContainer = styled("div")(({ theme }) => ({
-//   flexGrow: 1,
-//   position: "relative",
-//   paddingTop: 10,
-// }));
-
-const PageContainer = ({ children, theme }) => (
+const PageContainer = ({ children, theme, sidebarWidth }) => (
   <Box
     sx={{
-      paddingTop: 12, // Adjust based on AppBar height
-      paddingLeft: { sm: 35 }, // Adjust based on Sidebar width
-      paddingRight: 3,
-      paddingBottom: 3,
+      marginTop: 7, // Adjust based on AppBar heights
+      marginLeft: { sm: sidebarWidth }, // Adjust based on Sidebar width
+      paddingLeft: sidebarWidth === 0 ? 0 : 3,
+      paddingRight: sidebarWidth === 0 ? 0 : 3,
+      marginRight: sidebarWidth === 0 ? 0 : 1,
+      marginBottom: sidebarWidth === 0 ? 0 : 3,
       backgroundColor: theme.palette.background.default,
+      borderRadius: 5,
+      maxHeight: "calc(100vh - 64px)", // Adjust this 64px based on your AppBar's height if different
+      minHeight: "calc(100vh - 64px)",
+      overflowY: "auto", // Enables vertical scrolling
     }}
   >
     {children}
   </Box>
 );
-
 export default function Layout(props: LayoutProps) {
   const theme = useTheme();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [sessionType, setSessionType] = React.useState("");
+  const [sidebarWidth, setSidebarWidth] = React.useState(32);
 
-  // const [currentUser] = useAtom(currentUserAtom);
+  const handleSelect = (type: string) => {
+    setSessionType(type);
+    setIsModalOpen(true);
+  };
+
   const currentUser = true;
   const [profileImgSrc, refetch] = useProfilePicture();
 
@@ -69,8 +77,40 @@ export default function Layout(props: LayoutProps) {
   const currentURL = router.asPath;
 
   const goToAccount = () => {
-    router.push(`/account`); // Assuming your `page` values in menuItems are valid paths
+    router.push(`/account`);
   };
+
+  const updateSideBarWidth = (open: boolean) => {
+    if (open) {
+      setSidebarWidth(32);
+    } else {
+      setSidebarWidth(10);
+    }
+  };
+
+  useEffect(() => {}, [router]);
+
+  useEffect(() => {
+    // Function to update sidebar width based on the route
+    const handleRouteChange = () => {
+      if (router.pathname.includes("live-practice-session")) {
+        setSidebarWidth(0);
+      } else {
+        setSidebarWidth(32);
+      }
+    };
+
+    // Call the function on mount and subscribe to route changes
+    handleRouteChange();
+
+    // Optional: Listen to route changes if you expect the pathname could change without unmounting the component
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    // Cleanup function to remove event listener
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router]);
 
   return (
     <>
@@ -99,87 +139,92 @@ export default function Layout(props: LayoutProps) {
         </Alert>
       </Snackbar>
 
-      {!(currentURL.includes("login") || currentURL.includes("register")) && (
-        <div>
-          <AppBar
-            position="fixed"
-            color="secondary"
-            sx={{
-              height: "fit-content",
-              padding: "0.5rem 0.75rem",
-              zIndex: (theme) => theme.zIndex.drawer + 1,
-            }}
-            // sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          >
-            <Grid container sx={{ width: "100%" }} alignItems="center">
-              <Grid
-                item
-                xs={1}
-                sx={{
-                  height: 40,
-                  display: "flex",
-                  alignItems: "center", // Center vertically
-                  justifyContent: "center", // Center horizontally
-                }}
-              >
-                <Box
-                  component="img"
+      <Box
+        style={{
+          backgroundColor: theme.palette.mode == "dark" ? "#000" : "#E2F1FA",
+          minHeight: "100vh",
+        }}
+      >
+        {!(currentURL.includes("login") || currentURL.includes("register")) && (
+          <div>
+            <AppBar
+              position="fixed"
+              elevation={0}
+              sx={{
+                backgroundColor: theme.palette.mode == "dark" ? "#000" : "#E2F1FA",
+                height: "fit-content",
+              }}
+            >
+              <Grid container sx={{ width: "100%" }} alignItems="center">
+                <Grid
+                  item
+                  xs={1}
                   sx={{
-                    height: "80%",
-                    objectFit: "contain",
-                    display: "block",
-                    marginLeft: theme.spacing(2),
-                    marginRight: "auto",
+                    height: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
-                  alt="WePrep logo"
-                  src={
-                    theme.palette.mode === IThemeMode.LIGHT
-                      ? "/app-logo-light.png"
-                      : "/app-logo-dark.png"
-                  }
-                />
-              </Grid>
-              <Grid
-                item
-                xs={11}
-                sx={{
-                  display: "flex",
-                  justifyContent: "right",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <Link href={"/product/post"}>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    sx={{ textTransform: "none", height: "fit-content" }}
-                    startIcon={<PlayCircle style={{ fill: "#fff" }} />}
-                  >
-                    Start New Practice Session
-                  </Button>
-                </Link>
+                >
+                  <Box
+                    component="img"
+                    sx={{
+                      height: "80%",
+                      objectFit: "contain",
+                      display: "block",
+                      marginLeft: theme.spacing(2),
+                      marginRight: "auto",
+                    }}
+                    alt="WePrep logo"
+                    src={
+                      theme.palette.mode === IThemeMode.LIGHT
+                        ? "/app-logo-light.png"
+                        : "/app-logo-dark.png"
+                    }
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={11}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "right",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <PracticeSessionButton onSelect={handleSelect} />
+                  {isModalOpen && (
+                    <StartPracticeSessionModel
+                      open={isModalOpen}
+                      onClose={() => setIsModalOpen(false)}
+                      sessionType={sessionType}
+                    />
+                  )}
 
-                <IconButton size="small">
-                  <NotificationsOutlined style={{ fill: theme.palette.primary.main }} />
-                </IconButton>
-                <Box onClick={goToAccount}>
-                  <Avatar src={"/user-avatar.svg"} />
-                </Box>
-                <Typography variant="subtitle2" color={theme.palette.primary.main}>
-                  Faaiz Khan
-                </Typography>
-                <LightDarkSwitchBtn />
+                  <IconButton size="small">
+                    <NotificationsOutlined style={{ fill: theme.palette.primary.main }} />
+                  </IconButton>
+                  <Box onClick={goToAccount}>
+                    <Avatar src={"/user-avatar.svg"} />
+                  </Box>
+                  <Typography variant="subtitle2" color={theme.palette.primary.main}>
+                    Faaiz Khan
+                  </Typography>
+                  <LightDarkSwitchBtn />
+                </Grid>
               </Grid>
-            </Grid>
-          </AppBar>
+            </AppBar>
 
-          <SideBar />
-        </div>
-      )}
-      <PageContainer children={props.children} theme={theme}>
-        {/* {props.children} */}
-      </PageContainer>
+            {!currentURL.includes("live-practice-session") && (
+              <SideBar updateSideBarWidth={updateSideBarWidth} />
+            )}
+          </div>
+        )}
+        <PageContainer children={props.children} theme={theme} sidebarWidth={sidebarWidth}>
+          {/* {props.children} */}
+        </PageContainer>
+      </Box>
     </>
   );
 }

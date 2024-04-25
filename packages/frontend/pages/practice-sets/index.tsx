@@ -93,7 +93,7 @@ export default function PracticeSession() {
   return (
     <>
       <Typography variant="h2" align="center" gutterBottom>
-        Practice Sets
+        Preparation Sets
       </Typography>
       <Box
         sx={{
@@ -109,7 +109,7 @@ export default function PracticeSession() {
           sx={{ textTransform: "none", height: "fit-content" }}
           startIcon={<PlayCircle style={{ fill: "#fff" }} />}
         >
-          Create New Practice Set
+          Create New Preparation Set
         </Button>
       </Box>
       <PracticeSessionsTable data={sessionData} />

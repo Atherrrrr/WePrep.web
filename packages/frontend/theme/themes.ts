@@ -65,7 +65,6 @@ export const AppLightTheme: Theme = createTheme({
     },
     background: {
       default: "#FFFFFF",
-      paper: "#E2F1FA",
     },
     text: {
       primary: "#000",
@@ -109,7 +108,7 @@ export const AppDarkTheme: Theme = createTheme({
     },
     background: {
       default: "#161A23",
-      paper: "#000",
+      // paper: "#000",
     },
     text: {
       primary: "#fff",

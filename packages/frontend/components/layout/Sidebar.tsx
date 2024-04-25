@@ -27,7 +27,7 @@ import DescriptionIcon from "@mui/icons-material/DescriptionOutlined";
 import QuizIcon from "@mui/icons-material/QuizOutlined"; // Assuming there's an outlined version
 import HistoryIcon from "@mui/icons-material/HistoryOutlined";
 import AnalyticsIcon from "@mui/icons-material/AnalyticsOutlined";
-// Assuming MenuBookIcon doesn't have a direct outlined version, using MenuBook as placeholder
+import Tooltip from "@mui/material/Tooltip";
 import MenuBookIcon from "@mui/icons-material/MenuBookOutlined"; // Assuming there's an outlined version
 import { Menu } from "@mui/base/Menu";
 import { red, green } from "@mui/material/colors";
@@ -82,18 +82,29 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
     flexShrink: 0,
     whiteSpace: "nowrap",
     boxSizing: "border-box",
-    ...(open && {
-      ...openedMixin(theme),
-      "& .MuiDrawer-paper": openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      "& .MuiDrawer-paper": closedMixin(theme),
-    }),
+    ...(open
+      ? {
+          ...openedMixin(theme),
+          "& .MuiDrawer-paper": {
+            ...openedMixin(theme),
+            overflowX: "visible", // Allow horizontal overflow when drawer is open
+            overflowY: "hidden", // Keep vertical overflow hidden to avoid scroll bars on the y-axis
+            zIndex: 1200, // Ensures it is above most content but adjust based on your app's z-index management
+          },
+        }
+      : {
+          ...closedMixin(theme),
+          "& .MuiDrawer-paper": {
+            ...closedMixin(theme),
+            overflowX: "visible", // Allow horizontal overflow when drawer is closed
+            overflowY: "hidden", // Maintain vertical overflow settings
+            zIndex: 1200, // Adjust zIndex if necessary to ensure visibility
+          },
+        }),
   })
 );
 
-export default function SideBar() {
+export default function SideBar({ updateSideBarWidth }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const router = useRouter(); // Using useRouter hook here
@@ -139,7 +150,7 @@ export default function SideBar() {
       page: "resumes",
     },
     {
-      title: "Practice Sets",
+      title: "Preparation Set",
       icon: <QuizIcon style={{ fill: theme.palette.text.secondary }} />,
       page: "practice-sets",
     },
@@ -162,14 +173,11 @@ export default function SideBar() {
 
   const toggleDrawer = () => {
     setOpen(!open);
+    updateSideBarWidth(!open);
   };
 
   const handleToggleSettings = () => {
     setOpenSettings(!openSettings);
-  };
-
-  const createHandleMenuClick = (action: string) => (event: React.MouseEvent<HTMLElement>) => {
-    console.log(`Action ${action} was clicked.`, event);
   };
 
   const handleMenuItemClick = (page: string) => {
@@ -189,84 +197,118 @@ export default function SideBar() {
         sx={{
           "& .MuiDrawer-paper": {
             backgroundColor: theme.palette.background.default,
+            marginLeft: 1,
+            marginTop: 7,
+            marginRight: 5,
+            borderRadius: 5,
+            maxHeight: "calc(100vh - 80px)",
+            minHeight: "calc(100vh - 64px)",
+            overflowY: "auto", // Enables vertical scrolling
+            overflowX: "hidden",
           },
         }}
       >
-        <DrawerHeader>
-          <IconButton onClick={toggleDrawer}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon color="primary" />
-            ) : (
-              <ChevronLeftIcon color="primary" />
-            )}
-          </IconButton>
-        </DrawerHeader>
         <Divider />
         <List>
-          {menuItems.map((item) => (
-            <ListItem key={item.title} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                onClick={() => handleMenuItemClick(item.page)} // Added onClick event here
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                  "&:hover": {
-                    backgroundColor: theme.palette.action.hover,
-                  },
-                }}
-              >
-                <ListItemIcon
+          {menuItems.map((item, index) => (
+            <Tooltip key={item.title} title={!open ? item.title : ""} placement="right">
+              <ListItem key={item.title} disablePadding sx={{ display: "block" }}>
+                <Box
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    alignItems: "center",
+                    position: "relative", // Needed for absolute positioning of the toggle button
                   }}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                {open && (
-                  <ListItemText
-                    primary={item.title}
-                    primaryTypographyProps={{ style: { color: theme.palette.text.secondary } }}
-                  />
-                )}
-              </ListItemButton>
-            </ListItem>
+                  <ListItemButton
+                    onClick={() => handleMenuItemClick(item.page)} // Added onClick event here
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                      "&:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    {open && (
+                      <ListItemText
+                        primary={item.title}
+                        primaryTypographyProps={{ style: { color: theme.palette.text.secondary } }}
+                      />
+                    )}
+                  </ListItemButton>
+                  {index == 0 && (
+                    <IconButton
+                      onClick={toggleDrawer}
+                      sx={{
+                        position: "absolute",
+                        right: "-10px", // Adjusted to push it slightly outside the sidebar
+                        top: "30px",
+                        border: 1,
+                        borderRadius: 3, // This removes any rounded corners making the border rectangular
+                      }}
+                    >
+                      {!open ? (
+                        <ChevronRightIcon style={{ fill: theme.palette.text.secondary }} />
+                      ) : (
+                        <ChevronLeftIcon style={{ fill: theme.palette.text.secondary }} />
+                      )}
+                    </IconButton>
+                  )}
+                </Box>
+              </ListItem>
+            </Tooltip>
           ))}
           {/* Settings Dropdown */}
 
           <Divider />
-          <ListItemButton onClick={handleToggleSettings}>
-            <ListItemIcon>
-              <SettingsIcon style={{ marginLeft: "3px", fill: theme.palette.text.secondary }} />
-            </ListItemIcon>
-            <ListItemText
-              primary="Settings"
-              primaryTypographyProps={{ style: { color: theme.palette.text.secondary } }}
-            />
-            <IconButton onClick={handleToggleSettings}>
-              {openSettings ? (
-                <KeyboardArrowUpIcon style={{ fill: theme.palette.text.secondary }} />
-              ) : (
-                <KeyboardArrowDownIcon style={{ fill: theme.palette.text.secondary }} />
-              )}
-            </IconButton>
-          </ListItemButton>
+          <Tooltip key={"Settings"} title={!open ? "Settings" : ""} placement="right">
+            <ListItemButton onClick={handleToggleSettings}>
+              <ListItemIcon>
+                <SettingsIcon style={{ marginLeft: "3px", fill: theme.palette.text.secondary }} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Settings"
+                primaryTypographyProps={{ style: { color: theme.palette.text.secondary } }}
+              />
+              <IconButton onClick={handleToggleSettings}>
+                {openSettings ? (
+                  <KeyboardArrowUpIcon style={{ fill: theme.palette.text.secondary }} />
+                ) : (
+                  <KeyboardArrowDownIcon style={{ fill: theme.palette.text.secondary }} />
+                )}
+              </IconButton>
+            </ListItemButton>
+          </Tooltip>
           <Collapse in={openSettings} timeout="auto" unmountOnExit>
+            <Divider />
             <List component="div" disablePadding>
               {settingsItems.map((item) => (
-                <ListItemButton
-                  key={item.title}
-                  sx={{ pl: 4 }}
-                  onClick={() => handleMenuItemClick(item.page)}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText
-                    primary={item.title}
-                    primaryTypographyProps={{ style: { color: theme.palette.text.secondary } }}
-                  />
-                </ListItemButton>
+                <Tooltip key={item.title} title={!open ? item.title : ""} placement="right">
+                  <ListItemButton
+                    key={item.title}
+                    sx={{ pl: 2.5 }}
+                    onClick={() => handleMenuItemClick(item.page)}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText
+                      primary={item.title}
+                      primaryTypographyProps={{ style: { color: theme.palette.text.secondary } }}
+                    />
+                  </ListItemButton>
+                </Tooltip>
               ))}
             </List>
           </Collapse>
@@ -276,6 +318,7 @@ export default function SideBar() {
         <List
           sx={{
             mt: "auto",
+            paddingLeft: 1,
           }}
         >
           <ListItemButton
