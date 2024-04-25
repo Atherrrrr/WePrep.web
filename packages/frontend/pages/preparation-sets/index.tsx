@@ -3,13 +3,13 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 // import VideoView from "@/components/PracticeSession/VideoView";
 import { Box, Button, Typography } from "@mui/material";
-import PracticeSessionsTable from "@/components/Tables/PracticeSessionsTable";
+import PreparationSetTable from "@/components/Tables/PreparationSetTable";
 import { PlayCircle } from "@mui/icons-material";
 
 const sessionData = [
   {
     name: "John Doe",
-    role: "Developer",
+    type: "Mock Interview",
     date: "2021-08-01",
     avgScore: 75,
     status: "Processing",
@@ -17,7 +17,7 @@ const sessionData = [
   },
   {
     name: "Jane Smith",
-    role: "Product Manager",
+    type: "Mock Interview",
     date: "2021-07-25",
     avgScore: 88,
     status: "Analyzed",
@@ -25,7 +25,7 @@ const sessionData = [
   },
   {
     name: "William Johnson",
-    role: "Designer",
+    type: "Sales Pitch",
     date: "2021-06-17",
     avgScore: 65,
     status: "Processing",
@@ -33,7 +33,7 @@ const sessionData = [
   },
   {
     name: "Amanda Brown",
-    role: "Developer",
+    type: "Mock Interview",
     date: "2021-08-12",
     avgScore: 92,
     status: "Analyzed",
@@ -41,7 +41,7 @@ const sessionData = [
   },
   {
     name: "Matthew Garcia",
-    role: "Product Manager",
+    type: "Presentation Practice",
     date: "2021-05-09",
     avgScore: 78,
     status: "Analyzed",
@@ -49,7 +49,7 @@ const sessionData = [
   },
   {
     name: "Samantha Miller",
-    role: "Designer",
+    type: "Video Upload",
     date: "2021-04-22",
     avgScore: 59,
     status: "Analyzed",
@@ -57,7 +57,7 @@ const sessionData = [
   },
   {
     name: "Ethan Davis",
-    role: "Developer",
+    type: "Video Upload",
     date: "2021-03-15",
     avgScore: 81,
     status: "Processing",
@@ -65,7 +65,7 @@ const sessionData = [
   },
   {
     name: "Sophia Rodriguez",
-    role: "Product Manager",
+    type: "Quick Start",
     date: "2021-02-05",
     avgScore: 85,
     status: "Processing",
@@ -73,7 +73,7 @@ const sessionData = [
   },
   {
     name: "James Wilson",
-    role: "Designer",
+    type: "Quick Start",
     date: "2021-01-30",
     avgScore: 45,
     status: "Processing",
@@ -81,7 +81,7 @@ const sessionData = [
   },
   {
     name: "Olivia Martinez",
-    role: "Developer",
+    type: "Sales Pitch",
     date: "2021-01-12",
     avgScore: 90,
     status: "Analyzed",
@@ -112,7 +112,7 @@ export default function PracticeSession() {
           Create New Preparation Set
         </Button>
       </Box>
-      <PracticeSessionsTable data={sessionData} />
+      <PreparationSetTable data={sessionData} />
     </>
   );
 }

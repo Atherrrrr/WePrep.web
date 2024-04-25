@@ -4,9 +4,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PlayCircle from "@mui/icons-material/PlayCircle";
 import { useTheme } from "@mui/material/styles";
+import { SessionType } from "@/Enums/SessionType";
 
 interface PracticeSessionButtonProps {
-  onSelect: (sessionType: string) => void;
+  onSelect: (sessionType: SessionType) => void;
 }
 
 const PracticeSessionButton: React.FC<PracticeSessionButtonProps> = ({ onSelect }) => {
@@ -16,7 +17,8 @@ const PracticeSessionButton: React.FC<PracticeSessionButtonProps> = ({ onSelect 
   const [showDropDownMenu, setShowDropDownMenu] = useState<null | HTMLElement>(null);
   const open = Boolean(showDropDownMenu);
 
-  const handleSelect = (sessionType: string) => {
+  const handleSelect = (sessionType: SessionType) => {
+    // Parameter type as enum
     onSelect(sessionType);
     handleClose();
   };
@@ -69,19 +71,24 @@ const PracticeSessionButton: React.FC<PracticeSessionButtonProps> = ({ onSelect 
         }}
         sx={{
           "& .MuiPaper-root": {
-            // backgroundColor: theme.palette.background.default,
             width: menuWidth,
           },
         }}
       >
-        <MenuItem onClick={() => handleSelect("Quick Start")}>Quick Start</MenuItem>
-        <MenuItem onClick={() => handleSelect("Mock Interview")}>Mock Interview</MenuItem>
-        <MenuItem onClick={() => handleSelect("Presentation Practice")}>
-          Presentation Practice
+        <MenuItem onClick={() => handleSelect(SessionType.QuickStart)}>
+          {SessionType.QuickStart}
         </MenuItem>
-        <MenuItem onClick={() => handleSelect("Sales Pitch")}>Sales Pitch</MenuItem>
+        <MenuItem onClick={() => handleSelect(SessionType.MockInterview)}>
+          {SessionType.MockInterview}
+        </MenuItem>
+        <MenuItem onClick={() => handleSelect(SessionType.PresentationPractice)}>
+          {SessionType.PresentationPractice}
+        </MenuItem>
+        <MenuItem onClick={() => handleSelect(SessionType.SalesPitch)}>
+          {SessionType.SalesPitch}
+        </MenuItem>
         <MenuItem
-          onClick={() => handleSelect("Upload Video")}
+          onClick={() => handleSelect(SessionType.UploadVideo)}
           sx={{
             backgroundColor: theme.palette.action.hover,
             "&:hover": {
@@ -90,7 +97,7 @@ const PracticeSessionButton: React.FC<PracticeSessionButtonProps> = ({ onSelect 
             },
           }}
         >
-          Upload Video
+          {SessionType.UploadVideo}
         </MenuItem>
       </Menu>
     </>

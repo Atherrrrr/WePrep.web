@@ -27,10 +27,7 @@ import SkipNextIcon from "@mui/icons-material/SkipNext";
 import ReactPlayer from "react-player";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
-const videoConstraints = {
-  facingMode: "user",
-};
+import { red, grey } from "@mui/material/colors";
 
 const exampleUrl =
   "https://ai-interview-stub-video.s3.us-east-1.amazonaws.com/placeholder-ai-video.mp4?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGMaCXVzLWVhc3QtMSJIMEYCIQDlthtQfLMR40uCzj6QjxCOquIBMemdUTWf5I2df7r0KwIhAPPE6XzTyZIEahX2HhbLohzapX44vvoSjZl3VgUlPB6FKu0CCKz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNTMzMjY3Mzc5NDQ0IgxOLW2UPvJUPLrpuqkqwQJT0MycjxBEV85TaJAHqBHVRnE938pIQTWTCDi0GOpFxzC1AziIRVaySQMlGQeliqlYX0Wv4Q%2FxZkN3Ut3710xrMb0Yyf0R8kOahp%2F2X3zNlOWE%2Bc%2BVq6%2FVvqZz2AYi%2B6CKM9zsjRrtRp8rl%2BArVBabUEPVFr%2FkXyNz2Y%2BYbsFZNMC66jaKuNfD%2BNP8jrWqoIldLEBJDPsigDTYSmLC5Wx5TwrZte8GmeyTeOBI7BZSobeU9LIP%2BBJOPzN2jbDteKeir%2F%2FU4K%2F3sN2QW6Z1lQXpfJa%2BnxVOMdkyC6NirDbj0LuStRfwRr%2FaSQbMBw010VGflIqOaHPzd1JClFc9I%2BgTmPW%2BYmuiT2cLRc80XuybKSmpKTWULeR6s%2FKZ0iNnl8h6sQGxdXQ%2BXWE0urUtQ50PQ%2Fm4O8%2FxBIehgR5A5fgr1Pcwpc2qsQY6sgJAzHpoUMDqXg5pY%2BtakTHQVauZ%2FUV1gWNmzEvxfQ5Ccq3UYoKKBXIdEZt3DRwog8BxjG1Fxqbw7FOleA4bzZJQrCJOojbZFzffhFqnmk8IUpZYXoT9RikJmYV%2FZDZoDSE%2BfCaHrW0o2HkLL2rokY5YcXDDN2ILrecOmyg4Toov2k1yuTP6FrgwZ6gHVfkbsoGQuUJ24TXRQpcuYlyyZ2PsOXqT%2BfhrXITPBYAAC8oxDiXcnq3%2FXftAscLjjCl3l0EP9jiPuzu3OlOCbZzk4iSz%2FjrIb9Pw6od%2FUAStIRK5C6RmlCeN5%2BriIw%2BupYiksHPFHLo6YyRr1eM7JuOKXe8vFOIzH5U01EFLIC%2BG0Z606a%2F9dcfss54L6%2FpjSrztzfx2oc%2BsyrJHY57ji6OnvdcJBs4%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240425T190518Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIAXYKJWOT2HPYL4TMZ%2F20240425%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1c5556e2e80349b98f597e5edd8470f33ffa43e9a0cae4262a6b394ff1f77d30";
@@ -93,6 +90,7 @@ function VideoCall() {
     }
   };
   const onRepeat = () => {
+    setCurrentSpeaker(Speaker.AI);
     if (playerRef.current) {
       (playerRef.current as any).seekTo(0, "seconds");
       ((playerRef.current as any).getInternalPlayer() as HTMLVideoElement).play();
@@ -131,14 +129,16 @@ function VideoCall() {
     <Box sx={{ height: "100vh", backgroundColor: "#0C090A", color: "white", padding: 2 }}>
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
+          <IconButton disabled edge="start" color="inherit" aria-label="menu">
             <VideoCameraFrontIcon style={{ fill: "#fff" }} />
           </IconButton>
           <Typography variant="h6" sx={{ marginLeft: 1, color: "#FFF" }}>
             Mock Interview
           </Typography>
-          <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: "grey" }} />
-          <VolumeUpIcon sx={{ color: "#FFF" }} />
+          <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: "grey", mr: 4 }} />
+          <IconButton disabled edge="start" color="inherit" aria-label="menu">
+            <VolumeUpIcon style={{ fill: "#fff" }} />
+          </IconButton>
           <Typography variant="h6" sx={{ color: "#FFF" }}>
             {currentSpeaker === Speaker.AI ? "Joy Banks | AI Interviewer" : "Faaiz Khan | You"}
           </Typography>
@@ -165,17 +165,38 @@ function VideoCall() {
       </AppBar>
       <Divider />
       <Grid container spacing={2} sx={{ height: "100vh", padding: 2 }}>
-        <Grid item xs={12} md={6} sx={{ height: "75%" }}>
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            height: "75%",
+          }}
+        >
           <Webcam
             // audio={true}
             mirrored={true}
             videoConstraints={{ width: 1280, height: 720, facingMode: "user" }}
-            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "15px" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: "15px",
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6} sx={{ height: "75%" }}>
           {" "}
-          <Box sx={{ width: "100%", height: "70%", marginBottom: 0.5 }}>
+          <Box
+            sx={{
+              width: "100%",
+              height: "70%",
+              marginBottom: 0.5,
+              border: currentSpeaker == Speaker.AI ? 1 : 0,
+              borderColor: "#E2F1FA",
+              borderRadius: 1,
+            }}
+          >
             <ReactPlayer
               ref={playerRef}
               width="100%"
@@ -215,6 +236,10 @@ function VideoCall() {
                   backgroundColor: "#2A93D5",
                   "&:hover": {
                     backgroundColor: "#00255A",
+                  },
+                  "&:disabled": {
+                    backgroundColor: grey[200],
+                    color: grey[500],
                   },
                 }}
                 startIcon={<CheckCircleIcon style={{ fill: "#FFF" }} />}

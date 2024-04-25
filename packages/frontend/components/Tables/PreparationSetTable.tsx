@@ -1,4 +1,3 @@
-// PracticeSessionsTable.tsx
 import React from "react";
 import {
   Paper,
@@ -27,7 +26,6 @@ import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import { circularProgressClasses } from "@mui/material/CircularProgress";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { useRouter } from "next/router";
 
 interface SessionData {
   name: string;
@@ -35,10 +33,10 @@ interface SessionData {
   date: string;
   avgScore: number;
   status: string;
-  duration: string;
+  duration: number;
 }
 
-interface PracticeSessionsTableProps {
+interface PreparationSetTableProps {
   data: SessionData[];
 }
 
@@ -57,25 +55,19 @@ const ProgressContainer = styled("div")(({ theme }) => ({
   },
 }));
 
-const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) => {
+const PreparationSetTable: React.FC<PreparationSetTableProps> = ({ data }) => {
   // Function to render action buttons
   const theme = useTheme();
-  const router = useRouter();
 
-  const renderActions = (status) => (
+  const renderActions = () => (
     <>
       <Tooltip title="Edit" placement="top" arrow>
         <IconButton onClick={() => console.log("Edit")}>
           <EditOutlinedIcon sx={{ fill: "#006FEE" }} />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Delete" placement="top" arrow>
-        <IconButton onClick={() => console.log("Delete")}>
-          <DeleteOutlinedIcon sx={{ fill: "#EE0000" }} />
-        </IconButton>
-      </Tooltip>
       <Tooltip title="View" placement="top" arrow>
-        <IconButton onClick={viewPastSession}>
+        <IconButton onClick={() => console.log("View")}>
           <VisibilityOutlinedIcon sx={{ fill: "#17C964" }} />
         </IconButton>
       </Tooltip>
@@ -89,10 +81,6 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
     return "#F31260";
   };
 
-  const viewPastSession = () => {
-    router.push(`/past-sessions/view-session`);
-  };
-
   const ProgressLabel = styled(Typography)(({ theme, score }) => ({
     position: "absolute",
     zIndex: 1,
@@ -103,7 +91,7 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer sx={{ maxHeight: 830 }}>
-          <Table stickyHeader aria-label="practice sessions table">
+          <Table stickyHeader aria-label="preparation set table">
             <TableHead>
               <TableRow>
                 {/* Apply a grey background to header cells */}
@@ -218,7 +206,7 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
                       />
                     )}
                   </TableCell>
-                  <TableCell align="center">{renderActions(session.status)}</TableCell>
+                  <TableCell align="center">{renderActions()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -229,4 +217,4 @@ const PracticeSessionsTable: React.FC<PracticeSessionsTableProps> = ({ data }) =
   );
 };
 
-export default PracticeSessionsTable;
+export default PreparationSetTable;

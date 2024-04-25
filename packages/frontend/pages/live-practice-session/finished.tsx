@@ -19,7 +19,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import Webcam from "react-webcam";
 import { useRouter } from "next/router";
-import { ExitToApp, ExitToAppOutlined, RestartAltRounded } from "@mui/icons-material";
+import { ExitToApp, ExitToAppOutlined, RestartAltRounded, TaskAlt } from "@mui/icons-material";
 
 const videoConstraints = {
   //   width: { min: 480 },
@@ -44,10 +44,10 @@ function VideoCall() {
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu">
-            <VideoCameraFrontIcon style={{ fill: "#fff" }} />
+            <TaskAlt style={{ fill: "#fff" }} />
           </IconButton>
           <Typography variant="h6" sx={{ marginLeft: 1, color: "#FFF" }}>
-            Mock Interview
+            Session Finished
           </Typography>
         </Toolbar>
       </AppBar>
@@ -68,14 +68,29 @@ function VideoCall() {
         <Typography variant="body1" sx={{ color: "#A1A1AA", mb: 1 }}>
           Your Feedback and Analysis will be ready in the next 3-5 minutes
         </Typography>
-        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-          <Typography variant="subtitle1" sx={{ color: "#A1A1AA", mt: 1 }}>
-            Want to try again?
-          </Typography>
+        <Divider />
+        <Typography variant="subtitle1" sx={{ color: "#A1A1AA", mt: 2 }}>
+          Want to try again?
+        </Typography>
+        <Box sx={{ mt: 2, display: "flex", justifyContent: "center", gap: 2 }}>
+          <Button
+            size="large"
+            variant="contained"
+            startIcon={<RestartAltRounded style={{ fill: "#FFF" }} />}
+            onClick={onRestart}
+            sx={{
+              backgroundColor: "#2A93D5",
+              "&:hover": {
+                backgroundColor: "#00255A",
+              },
+            }}
+          >
+            Restart Session
+          </Button>
           <Button
             size="large"
             variant="outlined"
-            startIcon={<ExitToAppOutlined sx={{ fill: "#FFF" }} />}
+            startIcon={<ExitToAppOutlined style={{ fill: "#FFF" }} />}
             onClick={onExit}
             sx={{
               borderColor: "#FFF",
@@ -84,25 +99,9 @@ function VideoCall() {
                 borderColor: "#58585C",
                 color: "#58585C",
               },
-              marginTop: 3,
-              width: 330,
             }}
           >
             Exit
-          </Button>
-          <Button
-            size="large"
-            variant="contained"
-            sx={{
-              backgroundColor: "#2A93D5",
-              "&:hover": {
-                backgroundColor: "#00255A",
-              },
-            }}
-            startIcon={<RestartAltRounded style={{ fill: "#FFF" }} />}
-            onClick={onRestart}
-          >
-            Restart Session
           </Button>
         </Box>
       </Box>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -19,11 +19,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import Webcam from "react-webcam";
 import { useRouter } from "next/router";
+import { Pending } from "@mui/icons-material";
+import { SessionType } from "@/Enums/SessionType";
 
 const videoConstraints = {
-  //   width: { min: 480 },
-  //   height: { min: 720 },
-  //   aspectRatio: 0.6666666667,/
   facingMode: "user",
 };
 
@@ -32,13 +31,31 @@ function VideoCall() {
   const [cameraEnabled, setCameraEnabled] = React.useState(false);
   const [micEnabled, setMicEnabled] = React.useState(false);
   const router = useRouter();
+  const [sessionType, setSessionType] = React.useState<SessionType | undefined>();
+
+  useEffect(() => {
+    if (router.isReady) {
+      const type = decodeURIComponent(router.query.sessionType as string);
+
+      // Ensure the type from the query is a valid sessionType enum value
+      if (type && Object.values(SessionType).includes(type)) {
+        setSessionType(type as SessionType);
+      }
+    }
+  }, [router.isReady, router.query]);
 
   const onCancel = () => {
     router.push(`/dashboard`);
   };
 
   const onJoinSession = () => {
-    router.push(`/live-practice-session/start`);
+    if (sessionType == SessionType.MockInterview) {
+      router.push(`/live-practice-session/start-mock-interview`);
+    } else if (sessionType == SessionType.PresentationPractice) {
+      router.push(`/live-practice-session/start-presentation`);
+    } else {
+      router.push(`/live-practice-session/start-sales-pitch`);
+    }
   };
 
   return (
@@ -46,10 +63,10 @@ function VideoCall() {
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu">
-            <VideoCameraFrontIcon style={{ fill: "#fff" }} />
+            <Pending style={{ fill: "#fff" }} />
           </IconButton>
           <Typography variant="h6" sx={{ marginLeft: 1, color: "#FFF" }}>
-            Mock Interview
+            Starting Session
           </Typography>
         </Toolbar>
       </AppBar>

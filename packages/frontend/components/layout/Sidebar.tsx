@@ -156,7 +156,7 @@ export default function SideBar({ updateSideBarWidth }) {
     {
       title: "Preparation Set",
       icon: <QuizIcon style={{ fill: theme.palette.text.secondary }} />,
-      page: "practice-sets",
+      page: "preparation-sets",
     },
     {
       title: "Past Sessions",
@@ -212,7 +212,18 @@ export default function SideBar({ updateSideBarWidth }) {
           },
         }}
       >
-        <Divider />
+        {!open && (
+          <DrawerHeader>
+            <IconButton
+              onClick={toggleDrawer}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+              }}
+            >
+              <ChevronRightIcon style={{ fill: "#FFF" }} />
+            </IconButton>
+          </DrawerHeader>
+        )}
         <List>
           {menuItems.map((item, index) => (
             <Tooltip key={item.title} title={!open ? item.title : ""} placement="right">
@@ -253,21 +264,27 @@ export default function SideBar({ updateSideBarWidth }) {
                       />
                     )}
                   </ListItemButton>
-                  {index == 0 && (
+                  {index == 0 && open && (
                     <IconButton
                       onClick={toggleDrawer}
                       sx={{
                         position: "absolute",
-                        right: "-10px", // Adjusted to push it slightly outside the sidebar
+                        right: "-10px",
                         top: "30px",
                         border: 1,
-                        borderRadius: 3, // This removes any rounded corners making the border rectangular
+                        borderRadius: 3,
+                        zIndex: 1,
+                        backgroundColor: theme.palette.primary.main,
+                        color: "#FFF",
+                        "&:hover": {
+                          backgroundColor: theme.palette.info.main,
+                        },
                       }}
                     >
                       {!open ? (
-                        <ChevronRightIcon style={{ fill: theme.palette.text.secondary }} />
+                        <ChevronRightIcon style={{ fill: "#FFF" }} />
                       ) : (
-                        <ChevronLeftIcon style={{ fill: theme.palette.text.secondary }} />
+                        <ChevronLeftIcon style={{ fill: "#FFF" }} />
                       )}
                     </IconButton>
                   )}
@@ -275,8 +292,6 @@ export default function SideBar({ updateSideBarWidth }) {
               </ListItem>
             </Tooltip>
           ))}
-          {/* Settings Dropdown */}
-
           <Divider />
           <Tooltip key={"Settings"} title={!open ? "Settings" : ""} placement="right">
             <ListItemButton onClick={handleToggleSettings}>
@@ -322,25 +337,27 @@ export default function SideBar({ updateSideBarWidth }) {
         <List
           sx={{
             mt: "auto",
-            paddingLeft: 1,
+            // paddingLeft: 1,
           }}
         >
-          <ListItemButton
-            onClick={logout}
-            sx={{
-              "&:hover": {
-                backgroundColor: theme.palette.error.light,
-              },
-            }}
-          >
-            <ListItemIcon>
-              <LogoutIcon style={{ fill: theme.palette.error.main }} />
-            </ListItemIcon>
-            <ListItemText
-              primary="Logout"
-              primaryTypographyProps={{ style: { color: theme.palette.error.main } }}
-            />
-          </ListItemButton>
+          <Tooltip key={"Logout"} title={!open ? "Logout" : ""} placement="right">
+            <ListItemButton
+              onClick={logout}
+              sx={{
+                "&:hover": {
+                  backgroundColor: theme.palette.error.light,
+                },
+              }}
+            >
+              <ListItemIcon>
+                <LogoutIcon style={{ fill: theme.palette.error.main }} />
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout"
+                primaryTypographyProps={{ style: { color: theme.palette.error.main } }}
+              />
+            </ListItemButton>
+          </Tooltip>
         </List>
       </Drawer>
     </Box>

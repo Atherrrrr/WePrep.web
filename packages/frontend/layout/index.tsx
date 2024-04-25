@@ -29,6 +29,7 @@ import useProfilePicture from "@/hooks/useProfilePicture";
 import { NotificationsOutlined, PlayCircle } from "@mui/icons-material";
 import { IThemeMode } from "@/theme/types";
 import SideBar from "@/components/layout/Sidebar";
+import { SessionType } from "@/Enums/SessionType";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -57,12 +58,20 @@ const PageContainer = ({ children, theme, sidebarWidth }) => (
 export default function Layout(props: LayoutProps) {
   const theme = useTheme();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [sessionType, setSessionType] = React.useState("");
+  const [sessionType, setSessionType] = React.useState<SessionType>();
   const [sidebarWidth, setSidebarWidth] = React.useState(32);
 
-  const handleSelect = (type: string) => {
-    setSessionType(type);
-    setIsModalOpen(true);
+  const handleSelect = (type: SessionType) => {
+    setSessionType(type); // Set the session type state
+
+    // Check if type matches specific session types before setting modal open state
+    if (
+      type === SessionType.MockInterview ||
+      type === SessionType.PresentationPractice ||
+      type === SessionType.SalesPitch
+    ) {
+      setIsModalOpen(true);
+    }
   };
 
   const currentUser = true;

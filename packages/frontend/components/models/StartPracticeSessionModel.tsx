@@ -13,11 +13,12 @@ import { useTheme, FormGroup } from "@mui/material";
 import { useRouter } from "next/router";
 import CancelIcon from "@mui/icons-material/Cancel";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import { SessionType } from "@/Enums/SessionType";
 
 interface PracticeSessionModalProps {
   open: boolean;
   onClose: () => void;
-  sessionType: string;
+  sessionType: SessionType;
 }
 
 function renderSelect(
@@ -80,7 +81,7 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
   const interviewToneOptions = [
     { value: "friendly", label: "Friendly" },
     { value: "neutral", label: "Neutral" },
-    { value: "hostile", label: "Hostile" },
+    { value: "strict", label: "Strict" },
   ];
 
   const resumeOptions = [
@@ -90,9 +91,13 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
 
   const onSubmit = () => {
     onClose();
-    router.push(`/live-practice-session`);
+    // Use encodeURIComponent to ensure spaces are encoded as %20
+    const encodedSessionType = encodeURIComponent(sessionType);
+    router.push({
+      pathname: "/live-practice-session",
+      query: { sessionType: encodedSessionType },
+    });
   };
-
   return (
     <Modal open={open} onClose={onClose}>
       <Box
