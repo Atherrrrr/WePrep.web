@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,6 +10,7 @@ import {
   Divider,
   Card,
   Grid,
+  CircularProgress,
 } from "@mui/material";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import MicIcon from "@mui/icons-material/Mic";
@@ -23,10 +24,16 @@ import Webcam from "react-webcam";
 import { useRouter } from "next/router";
 import ReplayIcon from "@mui/icons-material/Replay"; // Assuming 'repeat' icon means 'Replay'
 import SkipNextIcon from "@mui/icons-material/SkipNext";
+import ReactPlayer from "react-player";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const videoConstraints = {
   facingMode: "user",
 };
+
+const exampleUrl =
+  "https://ai-interview-stub-video.s3.us-east-1.amazonaws.com/placeholder-ai-video.mp4?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEGMaCXVzLWVhc3QtMSJIMEYCIQDlthtQfLMR40uCzj6QjxCOquIBMemdUTWf5I2df7r0KwIhAPPE6XzTyZIEahX2HhbLohzapX44vvoSjZl3VgUlPB6FKu0CCKz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNTMzMjY3Mzc5NDQ0IgxOLW2UPvJUPLrpuqkqwQJT0MycjxBEV85TaJAHqBHVRnE938pIQTWTCDi0GOpFxzC1AziIRVaySQMlGQeliqlYX0Wv4Q%2FxZkN3Ut3710xrMb0Yyf0R8kOahp%2F2X3zNlOWE%2Bc%2BVq6%2FVvqZz2AYi%2B6CKM9zsjRrtRp8rl%2BArVBabUEPVFr%2FkXyNz2Y%2BYbsFZNMC66jaKuNfD%2BNP8jrWqoIldLEBJDPsigDTYSmLC5Wx5TwrZte8GmeyTeOBI7BZSobeU9LIP%2BBJOPzN2jbDteKeir%2F%2FU4K%2F3sN2QW6Z1lQXpfJa%2BnxVOMdkyC6NirDbj0LuStRfwRr%2FaSQbMBw010VGflIqOaHPzd1JClFc9I%2BgTmPW%2BYmuiT2cLRc80XuybKSmpKTWULeR6s%2FKZ0iNnl8h6sQGxdXQ%2BXWE0urUtQ50PQ%2Fm4O8%2FxBIehgR5A5fgr1Pcwpc2qsQY6sgJAzHpoUMDqXg5pY%2BtakTHQVauZ%2FUV1gWNmzEvxfQ5Ccq3UYoKKBXIdEZt3DRwog8BxjG1Fxqbw7FOleA4bzZJQrCJOojbZFzffhFqnmk8IUpZYXoT9RikJmYV%2FZDZoDSE%2BfCaHrW0o2HkLL2rokY5YcXDDN2ILrecOmyg4Toov2k1yuTP6FrgwZ6gHVfkbsoGQuUJ24TXRQpcuYlyyZ2PsOXqT%2BfhrXITPBYAAC8oxDiXcnq3%2FXftAscLjjCl3l0EP9jiPuzu3OlOCbZzk4iSz%2FjrIb9Pw6od%2FUAStIRK5C6RmlCeN5%2BriIw%2BupYiksHPFHLo6YyRr1eM7JuOKXe8vFOIzH5U01EFLIC%2BG0Z606a%2F9dcfss54L6%2FpjSrztzfx2oc%2BsyrJHY57ji6OnvdcJBs4%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240425T190518Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIAXYKJWOT2HPYL4TMZ%2F20240425%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1c5556e2e80349b98f597e5edd8470f33ffa43e9a0cae4262a6b394ff1f77d30";
 
 const questionsData = [
   {
@@ -51,24 +58,46 @@ const questionsData = [
   },
 ];
 
+enum Speaker {
+  AI = "AI",
+  USER = "USER",
+}
+
 function VideoCall() {
   // State to manage camera and mic status
-  const [currentSpeaker, setCurrentSpeaker] = useState("John Doe | WePrep Interviewer");
+  const [currentSpeaker, setCurrentSpeaker] = useState(Speaker.AI);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(questionsData[0]);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState(exampleUrl);
+  const playerRef = useRef(null);
 
   const toggleSpeaker = () => {
-    if (currentSpeaker === "Faaiz Khan | You") {
-      setCurrentSpeaker("John Doe | WePrep Interviewer");
+    if (currentSpeaker === Speaker.AI) {
+      setCurrentSpeaker(Speaker.USER);
     } else {
-      setCurrentSpeaker("Faaiz Khan | You");
+      setCurrentSpeaker(Speaker.AI);
+    }
+  };
+
+  const playNext = () => {
+    if (playerRef.current) {
+      (playerRef.current as any).seekTo(0, "seconds");
+      ((playerRef.current as any).getInternalPlayer() as HTMLVideoElement).play();
     }
   };
 
   const onSkip = () => {
-    setCurrentQuestion(questionsData[currentQuestion.index + 1]);
+    if (questionsData.length > currentQuestion.index) {
+      setCurrentQuestion(questionsData[currentQuestion.index]);
+      playNext();
+    }
   };
-
+  const onRepeat = () => {
+    if (playerRef.current) {
+      (playerRef.current as any).seekTo(0, "seconds");
+      ((playerRef.current as any).getInternalPlayer() as HTMLVideoElement).play();
+    }
+  };
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeElapsed((prev) => prev + 1);
@@ -88,6 +117,16 @@ function VideoCall() {
     router.push(`/live-practice-session/finished`);
   };
 
+  const onFinishAnswer = () => {
+    toggleSpeaker();
+    playNext();
+  };
+
+  const handleVideoEnd = () => {
+    console.log("Video ended");
+    toggleSpeaker(); // Replay the video automatically or handle as needed
+  };
+
   return (
     <Box sx={{ height: "100vh", backgroundColor: "#0C090A", color: "white", padding: 2 }}>
       <AppBar position="static" color="transparent" elevation={0}>
@@ -101,7 +140,7 @@ function VideoCall() {
           <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: "grey" }} />
           <VolumeUpIcon sx={{ color: "#FFF" }} />
           <Typography variant="h6" sx={{ color: "#FFF" }}>
-            {currentSpeaker}
+            {currentSpeaker === Speaker.AI ? "Joy Banks | AI Interviewer" : "Faaiz Khan | You"}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
@@ -125,49 +164,84 @@ function VideoCall() {
         </Toolbar>
       </AppBar>
       <Divider />
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+      <Grid container spacing={2} sx={{ height: "100vh", padding: 2 }}>
+        <Grid item xs={12} md={6} sx={{ height: "75%" }}>
           <Webcam
-            audio={true}
+            // audio={true}
             mirrored={true}
-            videoConstraints={videoConstraints}
-            style={{ width: "100%", height: "100%", borderRadius: "5" }}
+            videoConstraints={{ width: 1280, height: 720, facingMode: "user" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "15px" }}
           />
         </Grid>
-        <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-          <Box sx={{ width: "100%", flex: 1, marginBottom: 2 }}>
-            <img
-              src="/ai-interviewer.png"
-              style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "15px" }}
+        <Grid item xs={12} md={6} sx={{ height: "75%" }}>
+          {" "}
+          <Box sx={{ width: "100%", height: "70%", marginBottom: 0.5 }}>
+            <ReactPlayer
+              ref={playerRef}
+              width="100%"
+              height="100%"
+              style={{ objectFit: "cover", borderRadius: "15px" }}
+              url={currentVideoUrl}
+              playing={true}
+              controls={false}
+              onEnded={handleVideoEnd}
             />
           </Box>
-          <Box sx={{ flex: 0, flexGrow: 1 }}>
-            <Card
-              sx={{ backgroundColor: "#FFF", color: "#00255A", padding: 2, borderRadius: "4px" }}
+          <Card
+            sx={{
+              height: "30%",
+              backgroundColor: "#FFF",
+              color: "#00255A",
+              padding: 2,
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              Question {currentQuestion.index}
+            </Typography>
+            <Typography variant="subtitle1">{currentQuestion.text}</Typography>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1 }}
             >
-              <Typography variant="h6" gutterBottom sx={{ color: "#006FEE" }}>
-                Question {currentQuestion.index}
-              </Typography>
-              <Typography variant="subtitle1">{currentQuestion.text}</Typography>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button
+                size="large"
+                variant="contained"
+                disabled={currentSpeaker == Speaker.AI}
+                sx={{
+                  mr: 2,
+                  backgroundColor: "#2A93D5",
+                  "&:hover": {
+                    backgroundColor: "#00255A",
+                  },
+                }}
+                startIcon={<CheckCircleIcon style={{ fill: "#FFF" }} />}
+                onClick={onFinishAnswer}
+              >
+                Finished Answering
+              </Button>
+
+              <Box sx={{ display: "flex" }}>
                 <Button
                   variant="contained"
-                  startIcon={<ReplayIcon />}
-                  // sx={{ marginRight: 1, backgroundColor: "#E6F1FE", color: "#006FEE" }}
+                  onClick={onRepeat}
+                  startIcon={<ReplayIcon sx={{ fill: "#fff" }} />}
                 >
                   Repeat
                 </Button>
                 <Button
                   variant="contained"
-                  startIcon={<SkipNextIcon />}
-                  // sx={{ backgroundColor: "#E6F1FE", color: "#006FEE" }}
+                  startIcon={<SkipNextIcon sx={{ fill: "#fff" }} />}
                   onClick={onSkip}
+                  sx={{ ml: 1 }}
                 >
                   Skip
                 </Button>
               </Box>
-            </Card>
-          </Box>
+            </Box>
+          </Card>
         </Grid>
       </Grid>
       <AppBar
@@ -185,15 +259,16 @@ function VideoCall() {
         <Button
           size="large"
           variant="contained"
-          startIcon={<CancelIcon sx={{ fill: "#fff" }} />}
+          startIcon={<StopCircleIcon sx={{ mr: 3, fill: "#fff" }} />}
           onClick={onEndSession}
           sx={{
+            width: "15rem",
             backgroundColor: "#CC525F", // Custom red color for the button
             color: "#FFF", // Text color is white
             "&:hover": {
               backgroundColor: "#E06370", // Lighter red on hover
             },
-            marginBottom: 2, // Margin from the bottom of the AppBar
+            marginBottom: 4, // Margin from the bottom of the AppBar
           }}
         >
           End Session

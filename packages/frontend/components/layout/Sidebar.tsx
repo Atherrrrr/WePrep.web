@@ -110,6 +110,10 @@ export default function SideBar({ updateSideBarWidth }) {
   const router = useRouter(); // Using useRouter hook here
   const [openSettings, setOpenSettings] = React.useState(false);
 
+  React.useEffect(() => {
+    updateSideBarWidth(true);
+  }, []);
+
   const settingsItems = [
     {
       title: "App Preferences",

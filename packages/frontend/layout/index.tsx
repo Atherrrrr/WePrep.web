@@ -89,16 +89,15 @@ export default function Layout(props: LayoutProps) {
     }
   };
 
-  useEffect(() => {}, [router]);
-
   useEffect(() => {
     // Function to update sidebar width based on the route
     const handleRouteChange = () => {
       if (router.pathname.includes("live-practice-session")) {
         setSidebarWidth(0);
-      } else {
-        setSidebarWidth(32);
       }
+      // else {
+      //   setSidebarWidth(32);
+      // }
     };
 
     // Call the function on mount and subscribe to route changes
