@@ -210,7 +210,7 @@ export default function Layout(props: LayoutProps) {
                     <Avatar src={"/user-avatar.svg"} />
                   </Box>
                   <Typography variant="subtitle2" color={theme.palette.primary.main}>
-                    Maher Athar
+                    Faaiz Khan
                   </Typography>
                   <LightDarkSwitchBtn />
                 </Grid>

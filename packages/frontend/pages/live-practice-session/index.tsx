@@ -49,7 +49,7 @@ function VideoCall() {
             <VideoCameraFrontIcon style={{ fill: "#fff" }} />
           </IconButton>
           <Typography variant="h6" sx={{ marginLeft: 1, color: "#FFF" }}>
-            Live Session
+            Mock Interview
           </Typography>
         </Toolbar>
       </AppBar>
@@ -61,7 +61,17 @@ function VideoCall() {
         <Typography variant="subtitle1" sx={{ color: "#A1A1AA", mb: 1 }}>
           Setup your audio and video before joining
         </Typography>
-        <Box>
+        <Box
+          sx={{
+            width: 630,
+            height: 470,
+            backgroundColor: "#0F1115",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {cameraEnabled ? (
             <>
               <Webcam
@@ -73,17 +83,7 @@ function VideoCall() {
               />
             </>
           ) : (
-            <Box
-              sx={{
-                width: 630,
-                height: 470,
-                backgroundColor: "#0F1115",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <>
               <Avatar
                 src={"/user-avatar.svg"}
                 sx={{
@@ -94,7 +94,7 @@ function VideoCall() {
               <Typography variant="h3" sx={{ mt: 1, color: "#FFF" }}>
                 Faaiz Khan
               </Typography>
-            </Box>
+            </>
           )}
         </Box>
         <Box sx={{ marginTop: 2 }}>
@@ -132,18 +132,30 @@ function VideoCall() {
         </Box>
         <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
           <Button
+            size="large"
             variant="contained"
             color="primary"
             startIcon={<PlayCircleFilledIcon style={{ fill: "#fff" }} />}
-            sx={{ backgroundColor: "#2A93D5" }}
+            sx={{
+              backgroundColor: "#12A150",
+              "&:hover": {
+                backgroundColor: "#007231",
+              },
+            }}
             onClick={onJoinSession}
           >
             Join Session
           </Button>
           <Button
-            variant="outlined"
-            color="warning"
-            startIcon={<CancelIcon style={{ fill: "#e97543" }} />}
+            size="large"
+            variant="contained"
+            sx={{
+              backgroundColor: "#CC525F",
+              "&:hover": {
+                backgroundColor: "#D53647",
+              },
+            }}
+            startIcon={<CancelIcon style={{ fill: "#FFF" }} />}
             onClick={onCancel}
           >
             Cancel Session
