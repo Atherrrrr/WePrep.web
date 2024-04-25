@@ -1,11 +1,31 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Box, Button, IconButton, Avatar } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  Avatar,
+  Divider,
+} from "@mui/material";
 import VideoCameraFrontIcon from "@mui/icons-material/VideoCameraFront";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VideocamOffIcon from "@mui/icons-material/VideocamOff";
+import CancelIcon from "@mui/icons-material/Cancel";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import Webcam from "react-webcam";
 import { useRouter } from "next/router";
+
+const videoConstraints = {
+  //   width: { min: 480 },
+  //   height: { min: 720 },
+  //   aspectRatio: 0.6666666667,/
+  facingMode: "user",
+};
 
 function VideoCall() {
   // State to manage camera and mic status
@@ -17,8 +37,12 @@ function VideoCall() {
     router.push(`/dashboard`);
   };
 
+  const onJoinSession = () => {
+    router.push(`/live-practice-session/start`);
+  };
+
   return (
-    <Box sx={{ height: "100vh", backgroundColor: "black", color: "white", padding: 4 }}>
+    <Box sx={{ height: "100vh", backgroundColor: "#0C090A", color: "white", padding: 2 }}>
       <AppBar position="static" color="transparent" elevation={0}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu">
@@ -29,54 +53,99 @@ function VideoCall() {
           </Typography>
         </Toolbar>
       </AppBar>
-
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        height="100%"
-      >
+      <Divider />
+      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" mt={8}>
         <Typography variant="h2" sx={{ color: "#FFF" }}>
           Get Started
         </Typography>
-        <Typography variant="subtitle1" sx={{ marginTop: 1, color: "#A1A1AA" }}>
+        <Typography variant="subtitle1" sx={{ color: "#A1A1AA", mb: 1 }}>
           Setup your audio and video before joining
         </Typography>
-
-        {cameraEnabled ? (
-          <Box sx={{ width: 300, height: 200, backgroundColor: "gray", marginTop: 2 }} />
-        ) : (
-          <Box
+        <Box>
+          {cameraEnabled ? (
+            <>
+              <Webcam
+                width={"100%"}
+                height={"100%"}
+                videoConstraints={videoConstraints}
+                mirrored={true}
+                audio={true}
+              />
+            </>
+          ) : (
+            <Box
+              sx={{
+                width: 630,
+                height: 470,
+                backgroundColor: "#0F1115",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Avatar
+                src={"/user-avatar.svg"}
+                sx={{
+                  width: 200,
+                  height: 200,
+                }}
+              />
+              <Typography variant="h3" sx={{ mt: 1, color: "#FFF" }}>
+                Faaiz Khan
+              </Typography>
+            </Box>
+          )}
+        </Box>
+        <Box sx={{ marginTop: 2 }}>
+          <IconButton
+            onClick={() => setMicEnabled(!micEnabled)}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: 2,
-              backgroundColor: "#A1A1AA",
+              backgroundColor: micEnabled ? "#000" : "#58585C",
+              ":hover": {
+                backgroundColor: "#343434",
+              },
             }}
           >
-            <Avatar sx={{ width: 56, height: 56 }} />
-            <Typography variant="subtitle2" sx={{ marginTop: 1, color: "#FFF" }}>
-              Username
-            </Typography>
-          </Box>
-        )}
-
-        <Box sx={{ marginTop: 2 }}>
-          <IconButton onClick={() => setMicEnabled(!micEnabled)} color="inherit">
-            {micEnabled ? <MicIcon /> : <MicOffIcon />}
+            {micEnabled ? (
+              <MicIcon style={{ fill: "#fff" }} />
+            ) : (
+              <MicOffIcon style={{ fill: "#fff" }} />
+            )}
           </IconButton>
-          <IconButton onClick={() => setCameraEnabled(!cameraEnabled)} color="inherit">
-            {cameraEnabled ? <VideocamIcon /> : <VideocamOffIcon />}
+          <IconButton
+            onClick={() => setCameraEnabled(!cameraEnabled)}
+            sx={{
+              ml: 1,
+              backgroundColor: cameraEnabled ? "#000" : "#58585C",
+              ":hover": {
+                backgroundColor: "#343434",
+              },
+            }}
+          >
+            {cameraEnabled ? (
+              <VideocamIcon style={{ fill: "#fff" }} />
+            ) : (
+              <VideocamOffIcon style={{ fill: "#fff" }} />
+            )}
           </IconButton>
         </Box>
-
-        <Box sx={{ marginTop: 2 }}>
-          <Button variant="contained" color="primary">
+        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PlayCircleFilledIcon style={{ fill: "#fff" }} />}
+            sx={{ backgroundColor: "#2A93D5" }}
+            onClick={onJoinSession}
+          >
             Join Session
           </Button>
-          <Button variant="outlined" color="warning" sx={{ marginLeft: 2 }} onClick={onCancel}>
+          <Button
+            variant="outlined"
+            color="warning"
+            startIcon={<CancelIcon style={{ fill: "#e97543" }} />}
+            onClick={onCancel}
+          >
             Cancel Session
           </Button>
         </Box>

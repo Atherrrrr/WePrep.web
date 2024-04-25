@@ -9,8 +9,10 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
+import { useTheme, FormGroup } from "@mui/material";
 import { useRouter } from "next/router";
+import CancelIcon from "@mui/icons-material/Cancel";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 
 interface PracticeSessionModalProps {
   open: boolean;
@@ -54,6 +56,8 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
   const [resume, setResume] = useState("");
   const router = useRouter();
 
+  const theme = useTheme();
+
   const interviewTypeOptions = [
     { value: "behavioral", label: "Behavioral/HR Interview" },
     { value: "technical", label: "Technical Interview" },
@@ -80,8 +84,8 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
   ];
 
   const resumeOptions = [
-    { value: "resume1", label: "JohnDoe_Resume.pdf" },
-    { value: "resume2", label: "JaneDoe_CV.pdf" },
+    { value: "Faaiz_Resume.pdf", label: "Faaiz_Resume.pdf" },
+    { value: "Maher_CV.pdf", label: "Maher_CV.pdf" },
   ];
 
   const onSubmit = () => {
@@ -97,13 +101,13 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: "40rem",
           bgcolor: "background.paper",
           p: 4,
           borderRadius: 2,
         }}
       >
-        <Typography variant="h6" component="h2">
+        <Typography variant="h6" component="h2" textAlign="center">
           Start New {sessionType}
         </Typography>
         <FormGroup>
@@ -123,10 +127,13 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
           />
-          <TextareaAutosize
-            minRows={3}
-            placeholder="Job Description"
-            style={{ width: "100%", padding: 8 }}
+          <TextField
+            fullWidth
+            label="Job Description"
+            variant="outlined"
+            margin="normal"
+            multiline
+            rows={3}
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
           />
@@ -141,11 +148,19 @@ const StartPracticeSessionModel: React.FC<PracticeSessionModalProps> = ({
           {renderSelect("Interview Tone", interviewTone, setInterviewTone, interviewToneOptions)}
           {renderSelect("Resume", resume, setResume, resumeOptions)}
         </FormGroup>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          <Button variant="outlined" onClick={onClose}>
+        <Box sx={{ display: "flex", justifyContent: "center", width: "100%", mt: 2, gap: 2 }}>
+          <Button
+            variant="outlined"
+            startIcon={<CancelIcon style={{ fill: theme.palette.primary.main }} />}
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button variant="contained" onClick={onSubmit}>
+          <Button
+            variant="contained"
+            startIcon={<PlayCircleFilledIcon style={{ fill: "#fff" }} />}
+            onClick={onSubmit}
+          >
             Start
           </Button>
         </Box>

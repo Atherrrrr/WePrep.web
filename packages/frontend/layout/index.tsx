@@ -37,17 +37,18 @@ interface LayoutProps {
 const PageContainer = ({ children, theme, sidebarWidth }) => (
   <Box
     sx={{
-      marginTop: 7, // Adjust based on AppBar heights
-      marginLeft: { sm: sidebarWidth }, // Adjust based on Sidebar width
+      // sidebarWidth === 0 means live practice session
+      marginTop: 7,
+      marginLeft: { sm: sidebarWidth },
       paddingLeft: sidebarWidth === 0 ? 0 : 3,
       paddingRight: sidebarWidth === 0 ? 0 : 3,
       marginRight: sidebarWidth === 0 ? 0 : 1,
       marginBottom: sidebarWidth === 0 ? 0 : 3,
       backgroundColor: theme.palette.background.default,
-      borderRadius: 5,
-      maxHeight: "calc(100vh - 64px)", // Adjust this 64px based on your AppBar's height if different
-      minHeight: "calc(100vh - 64px)",
-      overflowY: "auto", // Enables vertical scrolling
+      borderRadius: sidebarWidth === 0 ? 0 : 5,
+      maxHeight: "calc(100vh - 64px)",
+      minHeight: sidebarWidth === 0 ? "calc(100vh - 56px)" : "calc(100vh - 64px)",
+      overflowY: sidebarWidth === 0 ? "hidden" : "auto", // Enables vertical scrolling
     }}
   >
     {children}
@@ -209,7 +210,7 @@ export default function Layout(props: LayoutProps) {
                     <Avatar src={"/user-avatar.svg"} />
                   </Box>
                   <Typography variant="subtitle2" color={theme.palette.primary.main}>
-                    Faaiz Khan
+                    Maher Athar
                   </Typography>
                   <LightDarkSwitchBtn />
                 </Grid>
