@@ -129,7 +129,7 @@ export const AppDarkTheme: Theme = createTheme({
     h1: { ...commonTypography.h1, color: "#fff" },
     h2: { ...commonTypography.h2, color: "#fff" },
     h3: { ...commonTypography.h3, color: "#fff" },
-    h6: { color: "#fff" },
+    h6: { color: "#2A93D5" },
     body1: { ...commonTypography.body1, color: "#fff" },
     body2: { ...commonTypography.body2, color: "#9CA3AF" },
   },

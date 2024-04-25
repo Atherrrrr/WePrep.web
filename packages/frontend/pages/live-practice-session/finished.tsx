@@ -19,6 +19,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import Webcam from "react-webcam";
 import { useRouter } from "next/router";
+import { ExitToApp, ExitToAppOutlined, RestartAltRounded } from "@mui/icons-material";
 
 const videoConstraints = {
   //   width: { min: 480 },
@@ -28,17 +29,14 @@ const videoConstraints = {
 };
 
 function VideoCall() {
-  // State to manage camera and mic status
-  const [cameraEnabled, setCameraEnabled] = React.useState(false);
-  const [micEnabled, setMicEnabled] = React.useState(false);
   const router = useRouter();
 
-  const onCancel = () => {
+  const onExit = () => {
     router.push(`/dashboard`);
   };
 
-  const onJoinSession = () => {
-    router.push(`/live-practice-session/start`);
+  const onRestart = () => {
+    router.push(`/live-practice-session`);
   };
 
   return (
@@ -76,6 +74,24 @@ function VideoCall() {
           </Typography>
           <Button
             size="large"
+            variant="outlined"
+            startIcon={<ExitToAppOutlined sx={{ fill: "#FFF" }} />}
+            onClick={onExit}
+            sx={{
+              borderColor: "#FFF",
+              color: "#FFF",
+              "&:hover": {
+                borderColor: "#58585C",
+                color: "#58585C",
+              },
+              marginTop: 3,
+              width: 330,
+            }}
+          >
+            Exit
+          </Button>
+          <Button
+            size="large"
             variant="contained"
             sx={{
               backgroundColor: "#2A93D5",
@@ -83,8 +99,8 @@ function VideoCall() {
                 backgroundColor: "#00255A",
               },
             }}
-            startIcon={<CancelIcon style={{ fill: "#FFF" }} />}
-            onClick={onCancel}
+            startIcon={<RestartAltRounded style={{ fill: "#FFF" }} />}
+            onClick={onRestart}
           >
             Restart Session
           </Button>
